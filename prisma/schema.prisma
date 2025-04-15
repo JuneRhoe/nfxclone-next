@@ -1,0 +1,39 @@
+generator client {
+  provider = "prisma-client-js"
+  // output   = "../node_modules/.prisma/client"
+  output   = "../prisma/generated/client"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+model NfxCloneSessions {
+  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  expiresAt      DateTime      @map("expires_at") @db.Date
+  userId         String        @unique @map("user_id")
+  nfxclone_users NfxCloneUsers @relation(fields: [userId], references: [userId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("nfxclone_sessions")
+}
+
+model NfxCloneUsers {
+  id                String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  createdAt         DateTime          @default(now()) @map("created_at") @db.Timestamptz(6)
+  userId            String            @unique @map("user_id")
+  userPassword      String?           @map("user_password")
+  nfxclone_sessions NfxCloneSessions?
+
+  @@map("nfxclone_users")
+}
+
+model Tmps {
+  id        String   @id(map: "tmps_pkey") @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  tmpName   String?  @map("tmp_name")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@map("tmp_table")
+}
