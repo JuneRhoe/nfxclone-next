@@ -11,6 +11,7 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-roboto);
+  --breakpoint-xs: 480px;
 }
 
 body {
@@ -20,7 +21,7 @@ body {
 
 /* :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #101010;
 } */
 
 /* @theme inline {

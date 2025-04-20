@@ -1,3 +1,5 @@
+'use client'
+
 import clsx from 'clsx'
 import MyInfo from '@/components/MyInfo/MyInfo'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'

@@ -1,6 +1,6 @@
 import { CSSProperties } from 'react'
 import clsx, { ClassValue } from 'clsx'
-import { ThemeMode } from '@/styles/styleVariables'
+import { COLOR_BACKGROUND, ThemeMode } from '@/styles/styleVariables'
 
 type DisplayType = 'full' | 'inline'
 
@@ -22,12 +22,12 @@ export default function Spinner({
   return (
     <div
       className={clsx(className, 'flex items-center justify-center', {
-        'bg-[#171717]': themeMode === 'dark',
+        [`bg-[${COLOR_BACKGROUND}]`]: themeMode === 'dark',
         'bg-white': themeMode === 'light',
         'h-full min-h-[100vh] w-full': display === 'full',
         'h-full w-full bg-transparent': display === 'inline',
       })}
-      style={style}
+      style={{ ...style }}
     >
       <div
         className={clsx(

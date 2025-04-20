@@ -1,4 +1,6 @@
-export default function RootContainer({
+import 'server-only'
+
+export default function RootContainerServer({
   children,
 }: Readonly<{
   children: React.ReactNode
