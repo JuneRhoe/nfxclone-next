@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'
 import { SignInForm } from '@/components/Guest/SignInForm'
 
-export default function LogIn() {
+export default function LogInPage() {
   const { changeThemeModeAction } = useMainStore((state) => state)
 
   useEffect(() => {

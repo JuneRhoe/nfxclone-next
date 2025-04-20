@@ -4,10 +4,12 @@ import Image from 'next/image'
 import clsx from 'clsx'
 import { usePathname } from 'next/navigation'
 import { COLOR_BACKGROUND, COLOR_FOREGROUND } from '@/styles/styleVariables'
-import { getAssetPath } from '@/libs/assetUtils'
+import { getAssetPath } from '@/libs/utils-asset'
 import Footer from '@/components/Footer/Footer'
 import TopNavBar from '@/components/Guest/TopNavBar'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'
+import { PATH_SIGN_UP } from '@/libs/definition-route'
+import { useEffect } from 'react'
 
 interface Props {
   children: React.ReactNode
@@ -15,9 +17,13 @@ interface Props {
 
 export default function GuestRootLayout({ children }: Props) {
   const pathname = usePathname()
-  const themeMode = useMainStore((state) => state.themeMode)
+  const { themeMode, removeUserInfoAction } = useMainStore((state) => state)
 
-  const isSignUp = pathname === '/signup'
+  useEffect(() => {
+    removeUserInfoAction()
+  }, [removeUserInfoAction])
+
+  const isSignUp = pathname === PATH_SIGN_UP
 
   return (
     <>

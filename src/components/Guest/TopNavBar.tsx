@@ -5,8 +5,9 @@ import Link from 'next/link'
 import Image from 'next/image'
 import clsx from 'clsx'
 import Button from '@/components/UI/Button/Button'
-import { getAssetPath } from '@/libs/assetUtils'
+import { getAssetPath } from '@/libs/utils-asset'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'
+import { PATH_ROOT, PATH_SIGN_UP } from '@/libs/definition-route'
 
 export default function TopNavBar() {
   const pathname = usePathname()
@@ -27,7 +28,7 @@ export default function TopNavBar() {
           'sm:w-[6rem]': themeMode === 'light',
         })}
       >
-        <Link href="/">
+        <Link href={PATH_ROOT}>
           <Image
             src={getAssetPath('/logo.webp')}
             width="123"
@@ -41,9 +42,9 @@ export default function TopNavBar() {
         variant="contained"
         size="medium"
         LinkComponent={Link}
-        href={pathname === '/' ? '/signup' : '/'}
+        href={pathname === PATH_ROOT ? PATH_SIGN_UP : PATH_ROOT}
       >
-        {pathname === '/' ? 'Sign Up' : 'Sign In'}
+        {pathname === PATH_ROOT ? 'Sign Up' : 'Sign In'}
       </Button>
     </div>
   )

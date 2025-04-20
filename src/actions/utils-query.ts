@@ -3,7 +3,7 @@
 import { cache } from 'react'
 import { sql } from 'drizzle-orm'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
-import { nfxCloneUsers } from 'drizzle-schema/table-aliases'
+import { nfxCloneUsers } from 'drizzle-definitions/table-aliases'
 
 export const findUser = cache(async (userId: string) => {
   try {

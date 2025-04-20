@@ -1,15 +1,28 @@
-import { CSSProperties } from '@mui/material/styles'
-import { THEME_MODE } from './Button'
+import { CSSProperties, Theme } from '@mui/material/styles'
+import { BUTTON_MODE } from './Button'
 
 export function getButtonStyles(
-  themeMode: THEME_MODE | undefined,
+  buttonMode: BUTTON_MODE | undefined,
+  resizeOnMobile: boolean | undefined,
+  theme: Theme,
 ): CSSProperties {
-  switch (themeMode) {
+  const sizeStyles = resizeOnMobile
+    ? {
+        [theme?.breakpoints?.down('xs')]: {
+          height: '1.25rem',
+          fontSize: '0.625rem',
+        },
+      }
+    : undefined
+
+  switch (buttonMode) {
     case 'primary':
     default:
-      return PRIMARY_STYLES
+      return { ...PRIMARY_STYLES, ...sizeStyles }
     case 'secondary':
-      return SECONDARY_STYLES
+      return { ...SECONDARY_STYLES, ...sizeStyles }
+    case 'third':
+      return { ...THIRD_STYLES, ...sizeStyles }
   }
 }
 
@@ -50,6 +63,29 @@ const SECONDARY_STYLES: CSSProperties = {
   '&.Mui-disabled': {
     color: 'var(--color-gray-300)',
     backgroundColor: '#5D8181',
+    '&.MuiButton-loading': {
+      color: 'transparent',
+      backgroundColor: '#5D5D5D',
+    },
+  },
+}
+
+const THIRD_STYLES: CSSProperties = {
+  height: '10px sm:20px',
+  boxShadow: 'none',
+  textTransform: 'none',
+  whiteSpace: 'nowrap',
+  color: 'black',
+  backgroundColor: 'white',
+  '&:hover': {
+    backgroundColor: 'var(--color-gray-300)',
+  },
+  '&:active': {
+    backgroundColor: 'var(--color-gray-300)',
+  },
+  '&.Mui-disabled': {
+    color: 'var(--color-gray-600)',
+    backgroundColor: 'var(--color-gray-200)',
     '&.MuiButton-loading': {
       color: 'transparent',
       backgroundColor: '#5D5D5D',

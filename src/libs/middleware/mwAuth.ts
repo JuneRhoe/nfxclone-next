@@ -7,6 +7,7 @@ import {
   REGEX_SIGNED_IN_DEFAULT_ROUTE,
   SIGNED_IN_DEFAULT_ROUTE,
 } from './mwDefinitions'
+import { PATH_ROOT } from '@/libs/definition-route'
 
 export default async function mwAuth(
   request: NextRequest,
@@ -31,7 +32,7 @@ export default async function mwAuth(
   const decryptedSession = await decryptCookie(encryptedSession)
 
   if (isProtectedRoute && !decryptedSession?.userId) {
-    return NextResponse.redirect(new URL('/', request.nextUrl))
+    return NextResponse.redirect(new URL(PATH_ROOT, request.nextUrl))
   }
 
   if (

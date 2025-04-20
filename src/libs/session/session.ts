@@ -8,7 +8,7 @@ import {
 } from '@/libs/cookie/cookieDefinitions'
 import { decryptCookie, encryptCookie } from '../cookie/utils'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
-import { nfxCloneSessions } from '@/drizzle-schema/table-aliases'
+import { nfxCloneSessions } from 'drizzle-definitions/table-aliases'
 import { eq } from 'drizzle-orm'
 
 export async function createSession(userId: string) {
