@@ -41,14 +41,21 @@
       "@/assets/*": ["../public/*"],
       "@/actions/*": ["actions/*"],
       "@/components/*": ["components/*"],
+      "@/data/*": ["data/*"],
       "@/libs/*": ["libs/*"],
       "@/stores/*": ["stores/*"],
       "@/styles/*": ["styles/*"],
       "@/drizzle/*": ["../drizzle/*"],
-      "@/drizzle-schema/*": ["drizzle-schema/*"],
+      "@/drizzle-definitions/*": ["drizzle-definitions/*"]
     }
-
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/components/UI/InputField/hooks.tsx"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/components/UI/InputField/hooks.tsx",
+    "eslint.config.ts"
+  ],
   "exclude": ["node_modules"]
 }
