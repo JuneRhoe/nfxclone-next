@@ -4,7 +4,7 @@ import { useEffect } from 'react'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'
 import { SignUpForm } from '@/components/Guest/SignUpForm'
 
-export default function SignUp() {
+export default function SignUpPage() {
   const { changeThemeModeAction } = useMainStore((state) => state)
 
   useEffect(() => {

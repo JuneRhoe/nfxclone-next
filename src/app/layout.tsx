@@ -1,12 +1,15 @@
+import 'server-only'
+
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v15-appRouter'
 import { ThemeProvider } from '@mui/material/styles'
-import RootContainer from '@/components/Root/RootContainer'
+import RootContainerServer from '@/components/Root/RootContainerServer'
 import '@/styles/globals.css'
 import '@/styles/fontawesome'
 import FONT_ROBOTO from '@/styles/fonts'
 import MUI_THEME from '@/styles/mui-theme'
-import { ROOT_METADATA } from '@/libs/rootMetadata'
+import { ROOT_METADATA } from '@/libs/metadata-root'
 import { MainStoreProvider } from '@/libs/stores/mainStoreProvider'
+
 // import { Analytics } from '@vercel/analytics/react'
 // import { SpeedInsights } from '@vercel/speed-insights/react'
 
@@ -16,10 +19,14 @@ import { MainStoreProvider } from '@/libs/stores/mainStoreProvider'
 
 export const metadata = ROOT_METADATA
 
-export default async function RootLayout({
+export default async function RootLayoutServer({
   children,
+  // guest,
+  // user,
 }: Readonly<{
   children: React.ReactNode
+  // guest: React.ReactNode
+  // user: React.ReactNode
 }>) {
   // const headersList = await headers()
   // const nonce = headersList.get('x-nonce') || ''
@@ -34,13 +41,24 @@ export default async function RootLayout({
 
   /// remove X-Robots-Tag
 
+  // const userId = await (
+  //   await fetch(`${process.env.__NEXT_PRIVATE_ORIGIN}/api/user-id`)
+  // ).json()
+  // const userId = await (
+  //   await fetch(`https://localhost:3333/api/user-id`)
+  // ).json()
+  // const hasVerifiedSession = !!userId
+
+  // console.log('----hasVerifiedSession0---', userId)
+
   return (
     <html lang="en" className={FONT_ROBOTO.variable}>
       <body>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={MUI_THEME}>
             <MainStoreProvider>
-              <RootContainer>{children}</RootContainer>
+              {/* <RootContainer>{hasVerifiedSession ? user : guest}</RootContainer> */}
+              <RootContainerServer>{children}</RootContainerServer>
             </MainStoreProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

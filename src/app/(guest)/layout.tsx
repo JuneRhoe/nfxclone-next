@@ -1,8 +1,10 @@
 export const dynamic = 'force-dynamic'
 
+import 'server-only'
+
 import GuestRootLayout from '@/components/Guest/GuestRootLayout'
 
-export default function GuestHome({
+export default function GuestLayoutServer({
   children,
 }: Readonly<{
   children: React.ReactNode
