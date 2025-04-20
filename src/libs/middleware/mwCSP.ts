@@ -33,9 +33,10 @@ export default function mwCSP(
 
   const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https:;
+    script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https: http:;
     style-src 'self' 'unsafe-inline';
     img-src 'self' blob: data:;
+    media-src 'self' ${process.env.ASSETS_HOST_NAME};
     font-src 'self';
     object-src 'none';
     base-uri 'self';

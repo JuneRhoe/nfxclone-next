@@ -1,5 +1,5 @@
-import { ThemeMode } from '@/styles/styleVariables'
 import { StateCreator } from 'zustand/vanilla'
+import { ThemeMode } from '@/styles/styleVariables'
 
 type ThemeModeState = {
   themeMode: ThemeMode

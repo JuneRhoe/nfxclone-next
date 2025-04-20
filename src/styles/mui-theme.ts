@@ -3,6 +3,15 @@
 import { createTheme } from '@mui/material/styles'
 // import { grey, red } from '@mui/material/colors'
 
+declare module '@mui/material/Button' {
+  interface ButtonPropsSizeOverrides {
+    extraSmall: true
+    small: true
+    medium: true
+    large: true
+  }
+}
+
 const MUI_THEME = createTheme({
   // components: {
   //   MuiButton: {
@@ -28,6 +37,15 @@ const MUI_THEME = createTheme({
   //     dark: grey[600],
   //   },
   // },
+  breakpoints: {
+    values: {
+      xs: 480,
+      sm: 640,
+      md: 768,
+      lg: 1024,
+      xl: 1536,
+    },
+  },
   typography: {
     fontFamily: 'var(--font-roboto)',
   },

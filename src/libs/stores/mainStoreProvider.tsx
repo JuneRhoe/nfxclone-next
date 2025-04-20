@@ -11,12 +11,16 @@ import {
   ThemeModeStore,
   createThemeModeSlice,
 } from '@/libs/stores/slices/themeModeSlice'
+import { createUserInfoSlice, UserInfoStore } from './slices/userInfoSlice'
 
 const createMainStore = () =>
-  createStore<CounterStore & ThemeModeStore>()((...inputParams) => ({
-    ...createCounterSlice(...inputParams),
-    ...createThemeModeSlice(...inputParams),
-  }))
+  createStore<UserInfoStore & ThemeModeStore & CounterStore>()(
+    (...inputParams) => ({
+      ...createUserInfoSlice(...inputParams),
+      ...createThemeModeSlice(...inputParams),
+      ...createCounterSlice(...inputParams),
+    }),
+  )
 
 type MainStoreApi = ReturnType<typeof createMainStore>
 const MainStoreContext = createContext<MainStoreApi | undefined>(undefined)
@@ -36,7 +40,7 @@ export const MainStoreProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useMainStore = <T,>(
-  selector: (store: CounterStore & ThemeModeStore) => T,
+  selector: (store: UserInfoStore & ThemeModeStore & CounterStore) => T,
 ): T => {
   const mainStoreContext = useContext(MainStoreContext)
 

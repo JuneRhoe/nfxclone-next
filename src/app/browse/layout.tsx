@@ -1,11 +1,13 @@
 export const dynamic = 'force-dynamic'
 
-import BrowseRootLayout from '@/components/Browse/BrowseRootLayout'
+import 'server-only'
 
-export default async function BrowseLayout({
+import BrowseRootLayoutServer from '@/components/Browse/BrowseRootLayoutServer'
+
+export default async function BrowseLayoutServer({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  return <BrowseRootLayout>BrowseLayout{children}</BrowseRootLayout>
+  return <BrowseRootLayoutServer>{children}</BrowseRootLayoutServer>
 }

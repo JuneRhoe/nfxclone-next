@@ -2,12 +2,13 @@
 
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { findUser } from './query-utils'
-import { encryptData } from './auth-utils'
+import { findUser } from './utils-query'
+import { encryptData } from './utils-auth'
 import { createSession } from '@/libs/session/session'
 import { SIGNED_IN_DEFAULT_ROUTE } from '@/libs/middleware/mwDefinitions'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
-import { nfxCloneUsers } from '@/drizzle-schema/table-aliases'
+import { nfxCloneUsers } from 'drizzle-definitions/table-aliases'
+import { PATH_ROOT } from '@/libs/definition-route'
 
 const RegistarFormSchema = z.object({
   userId: z
@@ -79,7 +80,7 @@ export async function register(
   }
 
   if (!insertedUser) {
-    redirect('/')
+    redirect(PATH_ROOT)
   }
 
   await createSession(insertedUser.userId)
