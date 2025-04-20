@@ -2,12 +2,13 @@
 
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { findUser } from './query-utils'
+import { findUser } from './utils-query'
 import { cookies } from 'next/headers'
 import {
   COOKIE_EXPIRATION_TIME,
   COOKIE_TMP_USER_ID_NAME,
 } from '@/libs/cookie/cookieDefinitions'
+import { PATH_REGISTER } from '@/libs/definition-route'
 
 const SignupFormSchema = z.object({
   userId: z
@@ -63,5 +64,5 @@ export async function signUp(
     path: '/',
   })
 
-  redirect('/register')
+  redirect(PATH_REGISTER)
 }
