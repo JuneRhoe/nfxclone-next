@@ -1,6 +1,6 @@
 import 'server-only'
 
-import { getBrowsePreviewMediaInfoList } from '@/data/medias'
+import { getBrowsePreviewMediaInfoList } from 'queries/medias'
 import BrowsePreview from './BrowsePreview'
 
 export default async function BrowsePreviewServer() {

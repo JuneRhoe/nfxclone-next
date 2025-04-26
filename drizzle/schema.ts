@@ -39,7 +39,15 @@ export const nfxcloneSessionsInDevelop = develop.table(
 export const usersMyMediasInDevelop = develop.table(
   'users_my_medias',
   {
-    id: uuid().defaultRandom().primaryKey().notNull(),
+    // You can use { mode: "bigint" } if numbers are exceeding js number limitations
+    id: bigint({ mode: 'number' }).primaryKey().generatedByDefaultAsIdentity({
+      name: 'develop.users_my_medias_id_seq',
+      startWith: 1,
+      increment: 1,
+      minValue: 1,
+      maxValue: 9223372036854775807,
+      cache: 1,
+    }),
     userUuid: uuid('user_uuid').notNull(),
     // You can use { mode: "bigint" } if numbers are exceeding js number limitations
     mediaId: bigint('media_id', { mode: 'number' }).notNull(),
@@ -48,12 +56,12 @@ export const usersMyMediasInDevelop = develop.table(
     foreignKey({
       columns: [table.mediaId],
       foreignColumns: [mediasInDevelop.id],
-      name: 'users_my_medias_media_id_fkey',
+      name: 'users_my_medias_media_id_fkey1',
     }),
     foreignKey({
       columns: [table.userUuid],
       foreignColumns: [nfxcloneUsersInDevelop.id],
-      name: 'users_my_medias_user_uuid_fkey',
+      name: 'users_my_medias_user_uuid_fkey1',
     }),
   ],
 )

@@ -28,3 +28,11 @@ export function getPreviewMediaInfo(mediaId: number) {
 
   return { mainImg, mainBlurImg, titleImg, trailer }
 }
+
+export function getSliderItemTitleImg(mediaId: number) {
+  return getAssetPath(`/browse/media-slider/title-img-${mediaId}.jpg`)
+}
+
+export function getSliderItemTitleImgPlaceholder() {
+  return getAssetPath(`/browse/title-img-placeholder.webp`)
+}

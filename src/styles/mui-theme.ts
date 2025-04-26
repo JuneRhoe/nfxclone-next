@@ -12,6 +12,12 @@ declare module '@mui/material/Button' {
   }
 }
 
+declare module '@mui/material/Modal' {
+  interface ModalComponentsPropsOverrides {
+    handleClose: () => void
+  }
+}
+
 const MUI_THEME = createTheme({
   // components: {
   //   MuiButton: {
