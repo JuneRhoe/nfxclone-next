@@ -52,6 +52,7 @@ export default function MediaPreviewImage({
             width="1140"
             height="640"
             alt="Browse Preview Main"
+            priority
             onLoad={() => onImageLoaded(true)}
           />
         )}

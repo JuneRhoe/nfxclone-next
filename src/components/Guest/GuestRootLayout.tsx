@@ -17,11 +17,13 @@ interface Props {
 
 export default function GuestRootLayout({ children }: Props) {
   const pathname = usePathname()
-  const { themeMode, removeUserInfoAction } = useMainStore((state) => state)
+  const { themeMode, removeUserInfoAction, removeMyMediasAction } =
+    useMainStore((state) => state)
 
   useEffect(() => {
     removeUserInfoAction()
-  }, [removeUserInfoAction])
+    removeMyMediasAction()
+  }, [removeUserInfoAction, removeMyMediasAction])
 
   const isSignUp = pathname === PATH_SIGN_UP
 
