@@ -1,10 +1,15 @@
 import 'server-only'
 
-import { getBrowseDisplayInfo } from '@/data/medias'
+import { getBrowseDisplayMediaInfo } from 'queries/medias'
 import BrowseMediaContainer from './BrowseMediaContainer'
 
 export default async function BrowseMediaContainerServer() {
-  const displayInfo = await getBrowseDisplayInfo()
+  const displayMediaInfo = await getBrowseDisplayMediaInfo()
 
-  return <BrowseMediaContainer displayInfo={displayInfo} />
+  return (
+    <BrowseMediaContainer
+      mainCategoryInfoMap={displayMediaInfo.mainCategoryInfoMap}
+      mediaInfoArray={displayMediaInfo.mediaInfoArray}
+    />
+  )
 }

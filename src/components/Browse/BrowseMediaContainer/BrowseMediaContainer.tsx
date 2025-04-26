@@ -1,53 +1,23 @@
 'use client'
 
-import { MediaBrowseDisplaySelect } from '@/drizzle-definitions/data-types'
+import { MediaSelect } from '@/drizzle-definitions/data-types'
+import MediaSliderContainer from './MediaSliderContainer/MediaSliderContainer'
 
-interface Props {
-  displayInfo: Pick<MediaBrowseDisplaySelect, 'mainCategory'>[]
+export interface BrowseMediaProps {
+  mainCategoryInfoMap: Map<number, string>
+  mediaInfoArray: [number, MediaSelect[]][]
 }
 
-export default function BrowseMediaContainer({ displayInfo }: Props) {
-  console.log('-------displayInfo------', displayInfo)
-
+export default function BrowseMediaContainer({
+  mainCategoryInfoMap,
+  mediaInfoArray,
+}: BrowseMediaProps) {
   return (
-    // <div className="absolute top-[25%] z-3">
-    <div className="relative z-4 mt-[calc(45%-3rem)] sm:mt-[calc(40%-3rem)]">
-      BrowseMediaContainer
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      BrowseMediaContainer
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      BrowseMediaContainer
+    <div className="relative z-4 mt-[calc(45%-3rem)] w-full sm:mt-[calc(40%-3rem)]">
+      <MediaSliderContainer
+        mainCategoryInfoMap={mainCategoryInfoMap}
+        mediaInfoArray={mediaInfoArray}
+      />
     </div>
   )
 }

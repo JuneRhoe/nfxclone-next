@@ -9,7 +9,7 @@ export default function Footer() {
 
   return (
     <div
-      className={clsx('flex w-full items-center justify-center py-5', {
+      className={clsx('z-2 flex w-full items-center justify-center py-5', {
         ['bg-gray-200 text-gray-700']: themeMode === 'light',
       })}
     >
