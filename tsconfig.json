@@ -38,7 +38,7 @@
     // }
     "baseUrl": "src/",
     "paths": {
-      "@/assets/*": ["../public/*"],
+      "@/assets/*": ["../public/assets/*"],
       "@/actions/*": ["actions/*"],
       "@/components/*": ["components/*"],
       "@/data/*": ["data/*"],
