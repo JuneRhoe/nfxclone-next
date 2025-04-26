@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react'
 import { useThrottledCallback } from 'use-debounce'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import { Breakpoint, useTheme } from '@mui/material/styles'
 
-const THROTTLE_WAIT_TIME = 100
+const THROTTLE_SCROLL_WAIT_TIME = 100
+const THROTTLE_RESIZE_WAIT_TIME = 300
 
-type ScreenSize = 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+type ScreenSize = 'none' | Breakpoint | '2xl'
 
 interface ScrollPos {
   posX: number
@@ -16,7 +18,7 @@ export function useScrollPos() {
 
   const debounceHandleScroll = useThrottledCallback(() => {
     setScrollPos({ posX: window.scrollX, posY: window.scrollY })
-  }, THROTTLE_WAIT_TIME)
+  }, THROTTLE_SCROLL_WAIT_TIME)
 
   useEffect(() => {
     window.addEventListener('scroll', debounceHandleScroll)
@@ -55,6 +57,26 @@ export function useIntersection(
   return isVisible
 }
 
+export function useGetInnerWidth() {
+  const [currentWidth, setCurrentWidth] = useState(0)
+
+  const debounceHandleResize = useThrottledCallback(() => {
+    setCurrentWidth(window.innerWidth)
+  }, THROTTLE_RESIZE_WAIT_TIME)
+
+  useEffect(() => {
+    debounceHandleResize()
+  }, [debounceHandleResize])
+
+  useEffect(() => {
+    window.addEventListener('resize', debounceHandleResize)
+
+    return () => window.removeEventListener('resize', debounceHandleResize)
+  }, [debounceHandleResize])
+
+  return currentWidth
+}
+
 export function useMediaQueryXS(): boolean {
   return useMediaQuery((theme) => theme.breakpoints.down('xs'))
 }
@@ -72,26 +94,29 @@ export function useMediaQueryLG(): boolean {
 }
 
 export function useMediaQueryXL(): boolean {
-  return useMediaQuery((theme) => theme.breakpoints.down('xl'))
+  return useMediaQuery((theme) => theme.breakpoints.up('lg'))
 }
 
 export function useScreenSize(): ScreenSize {
-  const isExtraSmall = useMediaQueryXS()
-  const isSmall = useMediaQuerySM()
-  const isMid = useMediaQueryMD()
-  const isLarge = useMediaQueryLG()
-  const isExtraLarge = useMediaQueryXL()
+  const innerWidth = useGetInnerWidth()
+  const theme = useTheme()
 
-  if (isExtraSmall) {
+  if (innerWidth <= 0) {
+    return 'none'
+  }
+
+  if (innerWidth < theme.breakpoints.values.xs) {
     return 'xs'
-  } else if (isSmall) {
+  } else if (innerWidth < theme.breakpoints.values.sm) {
     return 'sm'
-  } else if (isMid) {
+  } else if (innerWidth < theme.breakpoints.values.md) {
     return 'md'
-  } else if (isLarge) {
+  } else if (innerWidth < theme.breakpoints.values.lg) {
     return 'lg'
-  } else if (isExtraLarge) {
+  } else if (innerWidth < theme.breakpoints.values.xl) {
     return 'xl'
+  } else if (innerWidth >= theme.breakpoints.values.xl) {
+    return '2xl'
   }
 
   return 'none'
