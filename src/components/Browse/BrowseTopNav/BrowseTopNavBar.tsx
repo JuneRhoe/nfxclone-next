@@ -14,20 +14,19 @@ import TopNavTab from './components/TopNavTab'
 import UserMenu from './components/UserMenu'
 import { getSubTitle } from '../utils'
 import { getUserInfo } from '@/actions/action-userinfo'
+import { getUsersMyMedias } from '@/actions/action-get-mymedias'
 
 export default function BrowseTopNavBar() {
   const navTapRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
   const { scrollPosY } = useScrollPos()
 
-  const { userInfo, setUserInfoAction } = useMainStore((state) => state)
+  const { setUserInfoAction, setMyMediasAction } = useMainStore(
+    (state) => state,
+  )
 
   useEffect(() => {
-    if (userInfo) {
-      return
-    }
-
-    const callUserInfoAction = async () => {
+    const callUserInfoMyMediasAction = async () => {
       const userInfo = await getUserInfo()
 
       if (!userInfo) {
@@ -35,10 +34,11 @@ export default function BrowseTopNavBar() {
       }
 
       setUserInfoAction(userInfo)
+      setMyMediasAction(await getUsersMyMedias(userInfo.userId))
     }
 
-    callUserInfoAction()
-  }, [setUserInfoAction, userInfo])
+    callUserInfoMyMediasAction()
+  }, [setMyMediasAction, setUserInfoAction])
 
   const isScrollTop = scrollPosY === 0
   const isBrowseMain = pathname === PATH_BROWSE

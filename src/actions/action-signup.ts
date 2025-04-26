@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { findUser } from './utils-query'
+import { findUser } from 'queries/users'
 import { cookies } from 'next/headers'
 import {
   COOKIE_EXPIRATION_TIME,

@@ -2,7 +2,7 @@
 
 import { redirect } from 'next/navigation'
 import { z } from 'zod'
-import { findUser } from './utils-query'
+import { findUser } from 'queries/users'
 import { encryptData } from './utils-auth'
 import { createSession } from '@/libs/session/session'
 import { SIGNED_IN_DEFAULT_ROUTE } from '@/libs/middleware/mwDefinitions'
