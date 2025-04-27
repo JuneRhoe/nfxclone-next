@@ -5,6 +5,8 @@ import { MediaSelect } from '@/drizzle-definitions/data-types'
 import SliderItem from '@/components/UI/Slider/components/SliderItem'
 import { getSliderItemTitleImg } from '@/components/Browse/utils'
 import MediaSliderItemModal from './MediaSliderItemModal'
+import { useMediaMoreInfoModal } from '@/components/Browse/BrowseMediaContainer/MediaMoreInfoModal/hooks'
+import MediaMoreInfoModal from '@/components/Browse/BrowseMediaContainer/MediaMoreInfoModal/MediaMoreInfoModal'
 
 interface Props {
   mediaInfo: MediaSelect
@@ -19,11 +21,27 @@ export default function MediaSliderItem({
 }: Props) {
   const divRef = useRef<HTMLDivElement>(null)
 
-  const { itemRect, open, handleOpen, handleClose } =
-    useMediaSliderItemModal(divRef)
+  const {
+    itemRect: itemRectSliderItemModal,
+    isOpen: isSliderItemModalOpen,
+    openModal: openSliderItemModal,
+    closeModal: closeSliderItemModal,
+  } = useMediaSliderItemModal(divRef)
 
-  const { onTouchStart, onTouchEnd, onPointerOver, onPointerOut } =
-    useMediaSliderItem(isSliding, handleOpen)
+  const {
+    itemRect: itemRectMoreInfoModal,
+    isOpen: isMediaMoreInfoModalOpen,
+    openModal: openMediaMoreInfoModal,
+    closeModal: closeMediaMoreInfoModal,
+  } = useMediaMoreInfoModal(divRef)
+
+  const {
+    onTouchStart,
+    onTouchEnd,
+    onPointerOver,
+    onPointerOut,
+    onPointerMove,
+  } = useMediaSliderItem(isSliderItemModalOpen, isSliding, openSliderItemModal)
 
   return (
     <>
@@ -31,12 +49,15 @@ export default function MediaSliderItem({
         ref={divRef}
         className="relative aspect-9/5 pr-1"
         style={{ width: `${itemSize}%`, height: 'auto' }}
-        onTouchStart={onTouchStart}
-        onTouchEnd={onTouchEnd}
-        onPointerOver={onPointerOver}
-        onPointerOut={onPointerOut}
       >
-        <div className="relative h-full w-full">
+        <div
+          className="relative h-full w-full"
+          onTouchStart={onTouchStart}
+          onTouchEnd={onTouchEnd}
+          onPointerOver={onPointerOver}
+          onPointerOut={onPointerOut}
+          onPointerMove={onPointerMove}
+        >
           <span className="m-1" />
           <Image
             className="absolute top-0 left-0 h-full rounded-sm"
@@ -50,9 +71,20 @@ export default function MediaSliderItem({
 
       <MediaSliderItemModal
         mediaInfo={mediaInfo}
-        open={open}
-        itemRect={itemRect}
-        handleClose={handleClose}
+        open={isSliderItemModalOpen}
+        itemRect={itemRectSliderItemModal}
+        closeModal={closeSliderItemModal}
+        onShowMoreInfoModal={() => {
+          closeSliderItemModal()
+          openMediaMoreInfoModal()
+        }}
+      />
+
+      <MediaMoreInfoModal
+        mediaInfo={mediaInfo}
+        open={isMediaMoreInfoModalOpen}
+        itemRect={itemRectMoreInfoModal}
+        closeModal={closeMediaMoreInfoModal}
       />
     </>
   )

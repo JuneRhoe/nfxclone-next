@@ -8,9 +8,6 @@ import SliderItemContainer from '@/components/UI/Slider/components/SliderItemCon
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import MediaSliderSkeleton from './MediaSliderSkeleton'
 
-// import { useModal } from '@/features/Modal/hooks'
-// import MediaMoreInfoModal from '../../../MediaMoreInfoModal/MediaMoreInfoModal'
-
 interface Props {
   medias: MediaSelect[] | null
   title?: string
@@ -23,9 +20,6 @@ export interface MoreInfoModalInfo {
 }
 
 export default function MediaSlider({ medias, title, placeholder }: Props) {
-  // const [moreInfoModalInfo, setMoreInfoModalInfo] =
-  //   useState<MoreInfoModalInfo | null>(null)
-
   const { countPerPage, itemSize } = useMediaSliderItemSizeInfo()
 
   const {
@@ -47,13 +41,6 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
   if (itemSize < 1) {
     return null
   }
-
-  // const {
-  //   modalInstanceInfo: moreInfoModal,
-  //   isVisible: isMoreInfoModalVisible,
-  // } = useModal({
-  //   disableBodyScrollLock: false,
-  // })
 
   const mediaLength = medias?.length || 0
 
@@ -119,11 +106,6 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
                     mediaInfo={mediaInfo}
                     itemSize={itemSize}
                     isSliding={isSliding}
-                    // onShowMoreInfoModal={(mediaInfo, itemRect) => {
-                    //   setMoreInfoModalInfo({ mediaInfo, itemRect })
-                    //   moreInfoModal.closeAllModal()
-                    //   moreInfoModal.openModal()
-                    // }}
                   />
                 ))}
               </SliderItemContainer>
@@ -137,14 +119,6 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
           </Slider>
         )}
       </div>
-
-      {/* {isMoreInfoModalVisible && moreInfoModalInfo && (
-        <MediaMoreInfoModal
-          {...moreInfoModal}
-          mediaInfo={moreInfoModalInfo.mediaInfo}
-          itemRect={moreInfoModalInfo.itemRect}
-        />
-      )} */}
     </>
   )
 }
