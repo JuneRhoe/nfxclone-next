@@ -14,7 +14,7 @@ declare module '@mui/material/Button' {
 
 declare module '@mui/material/Modal' {
   interface ModalComponentsPropsOverrides {
-    handleClose: () => void
+    closeModal: () => void
   }
 }
 

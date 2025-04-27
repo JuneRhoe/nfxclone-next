@@ -8,7 +8,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 const MY_MEDIA_ACTION_DELAY = 500
 
-export function useMyMedias(mediaInfo?: MediaSelect, handleClose?: () => void) {
+export function useMyMedias(mediaInfo?: MediaSelect, closeModal?: () => void) {
   const { myMedias, userInfo, setMyMediasAction } = useMainStore(
     (state) => state,
   )
@@ -45,7 +45,7 @@ export function useMyMedias(mediaInfo?: MediaSelect, handleClose?: () => void) {
         }
 
         await removeUsersMyMedia(userInfo.userId, mediaInfo.id)
-        handleClose?.()
+        closeModal?.()
         setMyMediasAction(await getUsersMyMedias(userInfo.userId))
       }),
     MY_MEDIA_ACTION_DELAY,

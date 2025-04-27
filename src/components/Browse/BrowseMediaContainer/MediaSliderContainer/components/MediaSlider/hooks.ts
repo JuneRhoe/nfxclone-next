@@ -1,4 +1,4 @@
-import { RefObject, useState } from 'react'
+import { RefObject, useEffect, useState } from 'react'
 import { TouchPos } from './utils'
 import { SliderItemSizeInfo } from '@/components/UI/Slider/Slider'
 import { useScreenSize } from '@/components/UI/hooks'
@@ -57,16 +57,35 @@ export function useMediaSliderItemSizeInfo(): SliderItemSizeInfo {
 export function useMediaSliderItemModal(
   divRef: RefObject<HTMLDivElement | null>,
 ) {
-  const { open, handleOpen, handleClose } = useModal()
+  const { isOpen, openModal, closeModal } = useModal()
 
   const itemRect = divRef.current?.getBoundingClientRect()
 
-  return { open, itemRect, handleOpen, handleClose }
+  return {
+    isOpen,
+    itemRect,
+    openModal,
+    closeModal,
+  }
 }
 
-export function useMediaSliderItem(isSliding: boolean, handleOpen: () => void) {
+export function useMediaSliderItem(
+  isOpen: boolean,
+  isSliding: boolean,
+  openModal: () => void,
+) {
   const [timerId, setTimerId] = useState<NodeJS.Timeout>()
   const [touchPos, setTouchPos] = useState<TouchPos | null>(null)
+  const [isPointerOver, setIsPointerOver] = useState(false)
+  const [isPointerMove, setIsPointerMove] = useState(false)
+
+  useEffect(() => {
+    if (isPointerOver || isOpen || timerId || !isPointerMove) {
+      return
+    }
+
+    openModal()
+  }, [openModal, isPointerMove, isPointerOver, isOpen, timerId])
 
   const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouchPos({
@@ -93,7 +112,7 @@ export function useMediaSliderItem(isSliding: boolean, handleOpen: () => void) {
 
     setTimerId(
       setTimeout(() => {
-        handleOpen()
+        openModal()
       }, OPEN_MODAL_TOUCH_DELAY),
     )
   }
@@ -102,16 +121,31 @@ export function useMediaSliderItem(isSliding: boolean, handleOpen: () => void) {
     if (isSliding || e.pointerType === 'touch') {
       return
     }
+
+    setIsPointerOver(true)
+
     clearTimeout(timerId)
+
     setTimerId(
       setTimeout(() => {
-        handleOpen()
+        openModal()
       }, OPEN_MODAL_POINTER_DELAY),
     )
   }
 
   const onPointerOut = () => {
+    setIsPointerOver(false)
+    setIsPointerMove(false)
+
     clearTimeout(timerId)
+  }
+
+  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isSliding || e.pointerType === 'touch') {
+      return
+    }
+
+    setIsPointerMove(true)
   }
 
   return {
@@ -119,5 +153,6 @@ export function useMediaSliderItem(isSliding: boolean, handleOpen: () => void) {
     onTouchEnd,
     onPointerOver,
     onPointerOut,
+    onPointerMove,
   }
 }

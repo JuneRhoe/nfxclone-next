@@ -4,6 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import Button from '@/components/UI/Button/Button'
+import { useMediaMoreInfoModal } from '../../BrowseMediaContainer/MediaMoreInfoModal/hooks'
+import { useRef } from 'react'
+import MediaMoreInfoModal from '../../BrowseMediaContainer/MediaMoreInfoModal/MediaMoreInfoModal'
 
 export interface MediaPreviewImageProps {
   mediaInfo: MediaSelect
@@ -20,18 +23,10 @@ export default function MediaPreviewImage({
   isVideoEnded,
   onImageLoaded,
 }: MediaPreviewImageProps) {
-  // const moreInfoButtonRef = useRef<HTMLDivElement>(null)
+  const moreInfoButtonRef = useRef<HTMLDivElement>(null)
 
-  // const {
-  //   modalInstanceInfo: moreInfoModal,
-  //   isVisible: isMoreInfoModalVisible,
-  // } = useModal({
-  //   disableBodyScrollLock: false,
-  // })
-
-  // if (!mediaInfo) {
-  //   return null
-  // }
+  const { isOpen, openModal, closeModal } =
+    useMediaMoreInfoModal(moreInfoButtonRef)
 
   return (
     <>
@@ -91,9 +86,12 @@ export default function MediaPreviewImage({
               size="small"
               buttonMode="secondary"
               resizeOnMobile
-              onClick={() => {}}
+              onClick={openModal}
             >
-              <div className="flex items-center justify-center gap-1">
+              <div
+                ref={moreInfoButtonRef}
+                className="flex items-center justify-center gap-1"
+              >
                 <FontAwesomeIcon icon={faCircleInfo} fixedWidth />
                 More Info
               </div>
@@ -101,13 +99,13 @@ export default function MediaPreviewImage({
           </div>
         </div>
       </div>
-      {/* {isMoreInfoModalVisible && (
-        <MediaMoreInfoModal
-          {...moreInfoModal}
-          mediaInfo={mediaInfo}
-          itemRect={moreInfoButtonRef.current?.getBoundingClientRect()}
-        />
-      )} */}
+
+      <MediaMoreInfoModal
+        mediaInfo={mediaInfo}
+        open={isOpen}
+        itemRect={moreInfoButtonRef.current?.getBoundingClientRect()}
+        closeModal={closeModal}
+      />
     </>
   )
 }
