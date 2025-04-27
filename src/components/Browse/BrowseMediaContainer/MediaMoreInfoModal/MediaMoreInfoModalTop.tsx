@@ -52,7 +52,10 @@ export default function MediaMoreInfoModalTop({
       <div className="absolute top-[3%] right-[2%]">
         <IconButton icon={faXmark} buttonMode="dark" onClick={closeModal} />
       </div>
-      <div className="absolute bottom-[5%] left-[2%] flex items-center gap-2 sm:gap-4">
+      <div
+        className="absolute bottom-[5%] left-[2%] flex items-center gap-2 rounded-md bg-gray-700
+          p-1.5 sm:gap-4"
+      >
         <Button
           size="small"
           buttonMode="third"
