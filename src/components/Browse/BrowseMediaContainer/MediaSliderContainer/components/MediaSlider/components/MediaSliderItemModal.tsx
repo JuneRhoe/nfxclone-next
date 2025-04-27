@@ -7,7 +7,7 @@ import {
   faPlus,
 } from '@fortawesome/free-solid-svg-icons'
 import Modal, { ModalProps } from '@/components/UI/Modal/Modal'
-import MediaSliderItemModalBackdrop from './MediaSliderItemModalBackdrop'
+import ModalBackdrop from '@/components/UI/Modal/ModalBackdrop'
 import Grow from '@mui/material/Grow'
 import { getModalRect } from '../utils'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
@@ -19,13 +19,15 @@ import { useMyMedias } from '../../MyMediasSlider/hooks'
 interface Props extends Omit<ModalProps, 'children'> {
   mediaInfo: MediaSelect
   itemRect: DOMRect | undefined
-  handleClose: () => void
+  closeModal: () => void
+  onShowMoreInfoModal: () => void
 }
 
 export default function MediaSliderItemModal({
   mediaInfo,
   itemRect,
-  handleClose,
+  closeModal,
+  onShowMoreInfoModal,
   ...props
 }: Props) {
   const [noTransition, setNoTransition] = useState(false)
@@ -37,7 +39,7 @@ export default function MediaSliderItemModal({
 
     const handleScroll = () => {
       setNoTransition(true)
-      handleClose()
+      closeModal()
     }
 
     window.addEventListener('scroll', handleScroll)
@@ -46,7 +48,7 @@ export default function MediaSliderItemModal({
       setNoTransition(false)
       window.removeEventListener('scroll', handleScroll)
     }
-  }, [handleClose, props.open])
+  }, [closeModal, props.open])
 
   const {
     isInMyList,
@@ -54,7 +56,7 @@ export default function MediaSliderItemModal({
     addMyMedia,
     isRemoveMyMediaLoading,
     removeMyMedia,
-  } = useMyMedias(mediaInfo, handleClose)
+  } = useMyMedias(mediaInfo, closeModal)
 
   if (!itemRect) {
     return null
@@ -71,15 +73,16 @@ export default function MediaSliderItemModal({
     <Modal
       {...props}
       open={props.open}
-      onClose={handleClose}
+      onClose={closeModal}
       // closeAfterTransition
       disableScrollLock
       disableEnforceFocus
       disableRestoreFocus
-      slots={{ backdrop: MediaSliderItemModalBackdrop }}
+      disableAutoFocus
+      slots={{ backdrop: ModalBackdrop }}
       slotProps={{
         backdrop: {
-          handleClose,
+          closeModal,
         },
       }}
     >
@@ -102,11 +105,11 @@ export default function MediaSliderItemModal({
               return
             }
 
-            handleClose()
+            closeModal()
           }}
         >
           <div className="h-full w-full">
-            <div className="h-[55%]" onPointerDown={handleClose}>
+            <div className="h-[55%]" onPointerDown={closeModal}>
               <Image
                 className="w-full rounded-sm"
                 src={getSliderItemTitleImg(mediaInfo.id)}
@@ -137,7 +140,10 @@ export default function MediaSliderItemModal({
                     />
                   </div>
 
-                  <IconButton icon={faAngleDown} onClick={() => {}} />
+                  <IconButton
+                    icon={faAngleDown}
+                    onClick={() => onShowMoreInfoModal()}
+                  />
                 </div>
 
                 <div className="flex h-full w-full items-center gap-2 text-xs">
