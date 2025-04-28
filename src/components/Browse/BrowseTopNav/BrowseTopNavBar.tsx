@@ -15,6 +15,7 @@ import UserMenu from './components/UserMenu'
 import { getSubTitle } from '../utils'
 import { getUserInfo } from '@/actions/action-userinfo'
 import { getUsersMyMedias } from '@/actions/action-get-mymedias'
+import { SearchInput } from '../BrowseSearch/components/SearchInput'
 
 export default function BrowseTopNavBar() {
   const navTapRef = useRef<HTMLDivElement>(null)
@@ -89,7 +90,7 @@ export default function BrowseTopNavBar() {
             <TopNavTab />
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
-            {/* <SearchInput navTapRef={navTapRef} /> */}
+            <SearchInput navTapRef={navTapRef} />
             <UserMenu />
           </div>
         </div>
