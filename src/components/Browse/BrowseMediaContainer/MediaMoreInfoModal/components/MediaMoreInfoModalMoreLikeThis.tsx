@@ -1,6 +1,6 @@
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import MediaMoreInfoModalMoreLikeThisItem from './MediaMoreInfoModalMoreLikeThisItem'
-import { useMediaMoreInfoModalMoreLikeThis } from './hooks'
+import { useMediaMoreInfoModalMoreLikeThis } from '../hooks'
 import Spinner from '@/components/Spinner/Spinner'
 
 interface Props {

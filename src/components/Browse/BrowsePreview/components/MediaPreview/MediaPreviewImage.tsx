@@ -4,9 +4,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import Button from '@/components/UI/Button/Button'
-import { useMediaMoreInfoModal } from '../../BrowseMediaContainer/MediaMoreInfoModal/hooks'
+import { useMediaMoreInfoModal } from '../../../BrowseMediaContainer/MediaMoreInfoModal/hooks'
 import { useRef } from 'react'
-import MediaMoreInfoModal from '../../BrowseMediaContainer/MediaMoreInfoModal/MediaMoreInfoModal'
+import MediaMoreInfoModal from '../../../BrowseMediaContainer/MediaMoreInfoModal/MediaMoreInfoModal'
 
 export interface MediaPreviewImageProps {
   mediaInfo: MediaSelect
