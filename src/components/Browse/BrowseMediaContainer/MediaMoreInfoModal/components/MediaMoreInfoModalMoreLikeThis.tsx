@@ -10,10 +10,10 @@ interface Props {
 export default function MediaMoreInfoModalMoreLikeThis({ mediaInfo }: Props) {
   useMediaMoreInfoModalMoreLikeThis(mediaInfo)
 
-  const { isGetMorelikeMediasLoading, morelikeMedias } =
+  const { isLoading, morelikeMedias } =
     useMediaMoreInfoModalMoreLikeThis(mediaInfo)
 
-  if (isGetMorelikeMediasLoading) {
+  if (isLoading) {
     return (
       <Spinner
         className="opacity-50"

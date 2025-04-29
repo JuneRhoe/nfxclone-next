@@ -15,7 +15,11 @@ export default function BrowseAbout() {
             <div className="flex flex-col text-gray-400">
               <div>NextJS</div>
               <div>React • Typescript</div>
+              <div>Drizzle ORM</div>
+              <div>Tanstack Query (React Query)</div>
+              <div>Zustand</div>
               <div>Tailwind CSS</div>
+              <div>Material UI</div>
               <div>Turbopack</div>
             </div>
           </div>
