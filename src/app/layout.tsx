@@ -9,6 +9,7 @@ import FONT_ROBOTO from '@/styles/fonts'
 import MUI_THEME from '@/styles/mui-theme'
 import { ROOT_METADATA } from '@/libs/metadata-root'
 import { MainStoreProvider } from '@/libs/stores/mainStoreProvider'
+import TanstackQueryProvider from '@/libs/tanstack/Providers'
 
 // import { Analytics } from '@vercel/analytics/react'
 // import { SpeedInsights } from '@vercel/speed-insights/react'
@@ -26,7 +27,9 @@ export default async function RootLayoutServer({
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={MUI_THEME}>
             <MainStoreProvider>
-              <RootContainerServer>{children}</RootContainerServer>
+              <TanstackQueryProvider>
+                <RootContainerServer>{children}</RootContainerServer>
+              </TanstackQueryProvider>
             </MainStoreProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>

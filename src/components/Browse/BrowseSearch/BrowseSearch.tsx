@@ -1,19 +1,20 @@
 'use client'
 
+import { MediaSelect } from '@/drizzle-definitions/data-types'
 import MediaSliderItem from '../BrowseMediaContainer/MediaSliderContainer/components/MediaSlider/components/MediaSliderItem'
-import { useSearchItemSizeInfo, useSearchQuery } from './hooks'
+import { useSearchItemSizeInfo } from './hooks'
 
-export default function BrowseSearch() {
-  const { isLoading, queryKey, medias } = useSearchQuery()
+interface Props {
+  queryKey: string
+  medias: MediaSelect[] | null
+}
 
+export default function BrowseSearch({ queryKey, medias }: Props) {
   const { itemSize, gapX } = useSearchItemSizeInfo()
-
-  console.log('------BrowseSearch--------')
 
   return (
     <div className="w-full px-3 py-4 md:px-8 md:py-6">
-      {!isLoading &&
-        medias &&
+      {medias &&
         (medias.length > 0 ? (
           <div className={`flex w-full flex-wrap gap-x-[${gapX}%] gap-y-[4vw]`}>
             {medias.map((mediaInfo) => (
@@ -32,7 +33,7 @@ export default function BrowseSearch() {
           </div>
         ))}
 
-      {!isLoading && !medias && queryKey?.length < 2 && (
+      {!medias && queryKey?.length < 2 && (
         <div className="flex h-[5rem] w-full flex-col items-center justify-center p-4 text-gray-500">
           The search keyword must be at least 2 characters long.
         </div>

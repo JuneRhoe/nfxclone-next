@@ -1,49 +1,4 @@
-import { searchMedias } from '@/actions/action-search-medias'
 import { useScreenSize } from '@/components/UI/hooks'
-import { MediaSelect } from '@/drizzle-definitions/data-types'
-import { PATH_BROWSE } from '@/libs/definition-route'
-import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect, useState, useTransition } from 'react'
-
-export function useSearchQuery() {
-  const router = useRouter()
-
-  const searchParams = useSearchParams()
-  const queryKey = searchParams.get('k') || ''
-
-  const [isLoading, starSearchMedias] = useTransition()
-
-  const [medias, setMedias] = useState<MediaSelect[] | null>(null)
-
-  useEffect(() => {
-    if (queryKey) {
-      return
-    }
-
-    router.push(PATH_BROWSE)
-  }, [router, queryKey])
-
-  useEffect(() => {
-    const callSearchMediasAction = async () => {
-      starSearchMedias(async () => {
-        if (!queryKey) {
-          return
-        }
-
-        if (queryKey.length < 2) {
-          setMedias(null)
-          return
-        }
-
-        setMedias(await searchMedias(queryKey))
-      })
-    }
-    callSearchMediasAction()
-  }, [queryKey])
-
-  return { isLoading, queryKey, medias }
-}
-
 export interface SearchItemSizeInfo {
   itemSize: number
   gapX: number
