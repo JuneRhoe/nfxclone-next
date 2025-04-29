@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { PATH_BROWSE, PATH_BROWSE_SEARCH } from '@/libs/definition-route'
 import { useMediaQueryXS } from '@/components/UI/hooks'
 import { useDebouncedCallback } from 'use-debounce'
+
+const SEARH_INPUT_DELAY = 500
 
 interface Props {
   navTapRef: React.RefObject<HTMLDivElement | null>
@@ -14,10 +16,12 @@ export function SearchInput({ navTapRef }: Props) {
   const is2XS = useMediaQueryXS()
   const router = useRouter()
   const pathname = usePathname()
+  const searchParams = useSearchParams()
+  const queryKeyParam = searchParams.get('k') || ''
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [queryKey, setQueryKey] = useState('')
-  const [showInput, setShowInput] = useState(false)
+  const [queryKey, setQueryKey] = useState(queryKeyParam)
+  const [showInput, setShowInput] = useState(pathname === PATH_BROWSE_SEARCH)
   const [prevPath, setPrevPath] = useState<string>(PATH_BROWSE)
 
   const hasKeyword = queryKey.length > 0
@@ -30,7 +34,7 @@ export function SearchInput({ navTapRef }: Props) {
     } else {
       router.push(prevPath)
     }
-  }, 500)
+  }, SEARH_INPUT_DELAY)
 
   useEffect(() => {
     const handleClick = (e: PointerEvent | MouseEvent) => {
