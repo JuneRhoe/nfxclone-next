@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { getSliderItemTitleImg } from '../../utils'
+import { getSliderItemTitleImg } from '../../../utils'
 import {
   faCheck,
   faPlus,
@@ -10,7 +10,8 @@ import {
 import IconButton from '@/components/UI/IconButton/IconButton'
 import Button from '@/components/UI/Button/Button'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
-import { useMyMedias } from '../MediaSliderContainer/components/MyMediasSlider/hooks'
+import { useMyMedias } from '../../MediaSliderContainer/components/MyMediasSlider/hooks'
+import { COLOR_BACKGROUND } from '@/styles/styleVariables'
 
 interface Props {
   mediaInfo: MediaSelect
@@ -32,13 +33,12 @@ export default function MediaMoreInfoModalTop({
   return (
     <>
       <Image
-        className="w-full cursor-pointer rounded-t-xl"
+        className="w-full rounded-t-xl"
         src={mediaInfo.previewMainImg || getSliderItemTitleImg(mediaInfo.id)}
         width="868"
         height="500"
         alt="Preview Image"
         priority
-        onPointerDown={closeModal}
       />
       {mediaInfo.previewTitleImg && (
         <Image
@@ -53,8 +53,8 @@ export default function MediaMoreInfoModalTop({
         <IconButton icon={faXmark} buttonMode="dark" onClick={closeModal} />
       </div>
       <div
-        className="absolute bottom-[5%] left-[2%] flex items-center gap-2 rounded-md bg-gray-700
-          p-1.5 sm:gap-4"
+        className="absolute bottom-[5%] left-[2%] flex items-center gap-2 rounded-md p-1.5 sm:gap-4"
+        style={{ backgroundColor: `${COLOR_BACKGROUND}` }}
       >
         <Button
           size="small"

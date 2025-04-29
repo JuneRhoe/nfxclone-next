@@ -19,13 +19,13 @@ export default async function sitemap({
   // )
 
   // return products.map((product) => ({
-  //   url: `https://${process.env.NFXCLONE_DOMAIN}/browse/${product.id}`,
+  //   url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/browse/${product.id}`,
   //   lastModified: product.date,
   // }))
 
   return [
     {
-      url: `https://${process.env.NFXCLONE_DOMAIN}/browse/${id}`,
+      url: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/browse/${id}`,
       lastModified: new Date(),
     },
   ]

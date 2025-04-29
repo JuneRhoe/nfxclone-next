@@ -2,11 +2,11 @@
 
 import { useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
-import { PATH_BROWSE, PATH_BROWSE_ABOUT } from '@/libs/definition-route'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCaretUp } from '@fortawesome/free-solid-svg-icons'
 import Menu from '@/components/UI/Menu/Menu'
 import MenuItem from '@/components/UI/MenuItem/MenuItem'
+import { TAB_INFO_LIST } from '../utils'
 
 export default function MobileTopNavTab() {
   const router = useRouter()
@@ -54,20 +54,16 @@ export default function MobileTopNavTab() {
         transformOrigin={{ horizontal: 'right', vertical: 'top' }}
         anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
       >
-        <MenuItem
-          menuType="topmenu"
-          onClick={() => handleClickMenuItem(PATH_BROWSE)}
-          selected={pathName === PATH_BROWSE}
-        >
-          Home
-        </MenuItem>
-        <MenuItem
-          menuType="topmenu"
-          onClick={() => handleClickMenuItem(PATH_BROWSE_ABOUT)}
-          selected={pathName === PATH_BROWSE_ABOUT}
-        >
-          About
-        </MenuItem>
+        {TAB_INFO_LIST.map(({ path, label }) => (
+          <MenuItem
+            key={path}
+            menuType="topmenu"
+            onClick={() => handleClickMenuItem(path)}
+            selected={pathName === path}
+          >
+            {label}
+          </MenuItem>
+        ))}
       </Menu>
     </>
   )

@@ -1,9 +1,9 @@
 'use client'
 
 import { MediaSelect } from '@/drizzle-definitions/data-types'
-import { useMediaPreviewMedia } from './MediaPreview/hooks'
-import MediaPreviewImage from './MediaPreview/MediaPreviewImage'
-import MediaPreviewVideo from './MediaPreview/MediaPreviewVideo'
+import { useMediaPreviewMedia } from './components/MediaPreview/hooks'
+import MediaPreviewImage from './components/MediaPreview/MediaPreviewImage'
+import MediaPreviewVideo from './components/MediaPreview/MediaPreviewVideo'
 
 interface Props {
   previewMediaInfo: MediaSelect
