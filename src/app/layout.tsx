@@ -11,8 +11,8 @@ import { ROOT_METADATA } from '@/libs/metadata-root'
 import { MainStoreProvider } from '@/libs/stores/mainStoreProvider'
 import TanstackQueryProvider from '@/libs/tanstack/Providers'
 
-// import { Analytics } from '@vercel/analytics/react'
-// import { SpeedInsights } from '@vercel/speed-insights/react'
+import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/react'
 
 export const metadata = ROOT_METADATA
 
@@ -33,8 +33,8 @@ export default async function RootLayoutServer({
             </MainStoreProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
-        {/* <Analytics />
-        <SpeedInsights /> */}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
