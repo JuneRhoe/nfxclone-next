@@ -9,8 +9,9 @@
 export async function GET() {
   // const mediaRecords = await drizzleDB.select().from(medias)
   // const tmpData: MediaInfo = mediaRecords[0]
-  // console.log('---------tmpData--------', tmpData)
+  //
   // const arrayMedia: MediaSelect[] = []
+  //
   // for (let i = 0; i < MEDIA_DATA.length; i++) {
   //   const numId = Number(MEDIA_DATA[i].id)
   //   const maincate = Number(MEDIA_DATA[i].mainCategory)
@@ -18,11 +19,18 @@ export async function GET() {
   //   delete MEDIA_DATA[i].mainCategory
   //   arrayMedia.push({ id: numId, mainCategory: maincate, ...MEDIA_DATA[i] })
   // }
+  //
   // await drizzleDB.insert(medias).values(arrayMedia)
   // console.log('---------arrayMedia--------', arrayMedia)
+  //
   // return Response.json(arrayMedia)
+  //
+  //
+  //
   // const arrayGenres: MediaGenresSelect[] = []
+  //
   // let index = 0
+  //
   // for (let i = 0; i < MEDIA_DATA.length; i++) {
   //   const mediaId = Number(MEDIA_DATA[i].id)
   //   const genres = MEDIA_DATA[i].genres || []
@@ -31,6 +39,10 @@ export async function GET() {
   //     index++
   //   }
   // }
+  //
   // await drizzleDB.insert(mediaGenres).values(arrayGenres)
+  //
   // return Response.json(arrayGenres)
+
+  return Response.json('')
 }
