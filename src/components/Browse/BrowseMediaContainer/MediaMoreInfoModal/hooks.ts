@@ -1,7 +1,9 @@
-import { RefObject, useEffect, useState, useTransition } from 'react'
+import { RefObject, useEffect, useState } from 'react'
 import { useModal } from '@/components/UI/Modal/hooks'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
-import { getMoreLikeMedias } from '@/actions/action-get-morelike-medias'
+import { useTanstackQuery } from '@/libs/tanstack/hooks'
+import { queryFunction } from '@/libs/tanstack/utils'
+import { QUERY_KEY_MORELIKE_MEDIAS } from '@/libs/tanstack/queryKeys'
 
 export function useMediaMoreInfoModal(
   divRef: RefObject<HTMLDivElement | null>,
@@ -20,19 +22,32 @@ export function useMediaMoreInfoModal(
 
 export function useMediaMoreInfoModalMoreLikeThis(mediaInfo: MediaSelect) {
   const [morelikeMedias, setMorelikeMedias] = useState<MediaSelect[]>([])
-  const [isGetMorelikeMediasLoading, startGetMorelikeMedias] = useTransition()
+
+  const mainCategoryIndex = mediaInfo.mainCategory
+
+  const { isLoading, status, data } = useTanstackQuery<MediaSelect[]>(
+    [QUERY_KEY_MORELIKE_MEDIAS, mainCategoryIndex],
+    async () => {
+      const response = await queryFunction('morelike-medias', [
+        { name: 'main-category', value: mainCategoryIndex?.toString() || '' },
+      ])
+
+      return await response?.json()
+    },
+  )
 
   useEffect(() => {
-    const callMorelikeMediasAction = async () => {
-      startGetMorelikeMedias(async () => {
-        if (!mediaInfo.mainCategory) {
-          return
-        }
-        setMorelikeMedias(await getMoreLikeMedias(mediaInfo.mainCategory))
-      })
+    if (isLoading || status !== 'success' || !data) {
+      return
     }
-    callMorelikeMediasAction()
-  }, [mediaInfo.mainCategory])
 
-  return { isGetMorelikeMediasLoading, morelikeMedias }
+    if (!Array.isArray(data)) {
+      setMorelikeMedias([])
+      return
+    }
+
+    setMorelikeMedias(data)
+  }, [data, isLoading, status])
+
+  return { isLoading, morelikeMedias }
 }

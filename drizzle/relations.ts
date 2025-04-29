@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { mediasInDevelop, usersMyMediasInDevelop, nfxcloneUsersInDevelop, mediaMainCategoriesInDevelop, browsePreviewMediaListInDevelop, mediaBrowseDisplayInDevelop } from "./schema";
+import { mediasInDevelop, usersMyMediasInDevelop, nfxcloneUsersInDevelop, mediaCastsInDevelop, mediaMainCategoriesInDevelop, mediaGenresInDevelop, browsePreviewMediaListInDevelop, mediaBrowseDisplayInDevelop } from "./schema";
 
 export const usersMyMediasInDevelopRelations = relations(usersMyMediasInDevelop, ({one}) => ({
 	mediasInDevelop: one(mediasInDevelop, {
@@ -14,10 +14,12 @@ export const usersMyMediasInDevelopRelations = relations(usersMyMediasInDevelop,
 
 export const mediasInDevelopRelations = relations(mediasInDevelop, ({one, many}) => ({
 	usersMyMediasInDevelops: many(usersMyMediasInDevelop),
+	mediaCastsInDevelops: many(mediaCastsInDevelop),
 	mediaMainCategoriesInDevelop: one(mediaMainCategoriesInDevelop, {
 		fields: [mediasInDevelop.mainCategory],
 		references: [mediaMainCategoriesInDevelop.id]
 	}),
+	mediaGenresInDevelops: many(mediaGenresInDevelop),
 	browsePreviewMediaListInDevelops: many(browsePreviewMediaListInDevelop),
 }));
 
@@ -25,9 +27,23 @@ export const nfxcloneUsersInDevelopRelations = relations(nfxcloneUsersInDevelop,
 	usersMyMediasInDevelops: many(usersMyMediasInDevelop),
 }));
 
+export const mediaCastsInDevelopRelations = relations(mediaCastsInDevelop, ({one}) => ({
+	mediasInDevelop: one(mediasInDevelop, {
+		fields: [mediaCastsInDevelop.mediaId],
+		references: [mediasInDevelop.id]
+	}),
+}));
+
 export const mediaMainCategoriesInDevelopRelations = relations(mediaMainCategoriesInDevelop, ({many}) => ({
 	mediasInDevelops: many(mediasInDevelop),
 	mediaBrowseDisplayInDevelops: many(mediaBrowseDisplayInDevelop),
+}));
+
+export const mediaGenresInDevelopRelations = relations(mediaGenresInDevelop, ({one}) => ({
+	mediasInDevelop: one(mediasInDevelop, {
+		fields: [mediaGenresInDevelop.mediaId],
+		references: [mediasInDevelop.id]
+	}),
 }));
 
 export const browsePreviewMediaListInDevelopRelations = relations(browsePreviewMediaListInDevelop, ({one}) => ({

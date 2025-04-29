@@ -1,11 +1,10 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import clsx from 'clsx'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { useMainStore } from '@/libs/stores/mainStoreProvider'
 import { PATH_BROWSE } from '@/libs/definition-route'
 import { getAssetPath } from '@/libs/utils-asset'
 import { COLOR_BACKGROUND } from '@/styles/styleVariables'
@@ -13,32 +12,15 @@ import { useScrollPos } from '@/components/UI/hooks'
 import TopNavTab from './components/TopNavTab'
 import UserMenu from './components/UserMenu'
 import { getSubTitle } from '../utils'
-import { getUserInfo } from '@/actions/action-userinfo'
-import { getUsersMyMedias } from '@/actions/action-get-mymedias'
+import { SearchInput } from '../BrowseSearch/components/SearchInput'
+import { useInitUserInfo } from './hooks'
 
 export default function BrowseTopNavBar() {
   const navTapRef = useRef<HTMLDivElement>(null)
   const pathname = usePathname()
   const { scrollPosY } = useScrollPos()
 
-  const { setUserInfoAction, setMyMediasAction } = useMainStore(
-    (state) => state,
-  )
-
-  useEffect(() => {
-    const callUserInfoMyMediasAction = async () => {
-      const userInfo = await getUserInfo()
-
-      if (!userInfo) {
-        return
-      }
-
-      setUserInfoAction(userInfo)
-      setMyMediasAction(await getUsersMyMedias(userInfo.userId))
-    }
-
-    callUserInfoMyMediasAction()
-  }, [setMyMediasAction, setUserInfoAction])
+  useInitUserInfo()
 
   const isScrollTop = scrollPosY === 0
   const isBrowseMain = pathname === PATH_BROWSE
@@ -89,7 +71,7 @@ export default function BrowseTopNavBar() {
             <TopNavTab />
           </div>
           <div className="flex items-center gap-3 sm:gap-5">
-            {/* <SearchInput navTapRef={navTapRef} /> */}
+            <SearchInput navTapRef={navTapRef} />
             <UserMenu />
           </div>
         </div>

@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import { faCheck, faPlus } from '@fortawesome/free-solid-svg-icons'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
-import { useMyMedias } from '../MediaSliderContainer/components/MyMediasSlider/hooks'
-import { getSliderItemTitleImg } from '../../utils'
+import { useMyMedias } from '../../MediaSliderContainer/components/MyMediasSlider/hooks'
+import { getSliderItemTitleImg } from '../../../utils'
 import IconButton from '@/components/UI/IconButton/IconButton'
 
 interface Props {

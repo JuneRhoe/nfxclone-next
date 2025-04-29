@@ -2,9 +2,9 @@ import Grow from '@mui/material/Grow'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import Modal, { ModalProps } from '@/components/UI/Modal/Modal'
 import { COLOR_BACKGROUND } from '@/styles/styleVariables'
-import MediaMoreInfoModalBackdrop from './MediaMoreInfoModalBackdrop'
-import MediaMoreInfoModalTop from './MediaMoreInfoModalTop'
-import MediaMoreInfoModalBottom from './MediaMoreInfoModalBottom'
+import MediaMoreInfoModalBackdrop from './components/MediaMoreInfoModalBackdrop'
+import MediaMoreInfoModalTop from './components/MediaMoreInfoModalTop'
+import MediaMoreInfoModalBottom from './components/MediaMoreInfoModalBottom'
 import { useRef } from 'react'
 
 interface Props extends Omit<ModalProps, 'children'> {

@@ -1,6 +1,6 @@
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import MediaMoreInfoModalMoreLikeThisItem from './MediaMoreInfoModalMoreLikeThisItem'
-import { useMediaMoreInfoModalMoreLikeThis } from './hooks'
+import { useMediaMoreInfoModalMoreLikeThis } from '../hooks'
 import Spinner from '@/components/Spinner/Spinner'
 
 interface Props {
@@ -10,10 +10,10 @@ interface Props {
 export default function MediaMoreInfoModalMoreLikeThis({ mediaInfo }: Props) {
   useMediaMoreInfoModalMoreLikeThis(mediaInfo)
 
-  const { isGetMorelikeMediasLoading, morelikeMedias } =
+  const { isLoading, morelikeMedias } =
     useMediaMoreInfoModalMoreLikeThis(mediaInfo)
 
-  if (isGetMorelikeMediasLoading) {
+  if (isLoading) {
     return (
       <Spinner
         className="opacity-50"

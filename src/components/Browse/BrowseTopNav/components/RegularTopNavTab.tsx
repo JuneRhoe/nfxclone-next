@@ -4,12 +4,12 @@ import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
 import Tabs from '@/components/UI/Tabs/Tabs'
 import Tab from '@/components/UI/Tab/Tab'
-import { PATH_BROWSE, PATH_BROWSE_ABOUT } from '@/libs/definition-route'
+import { isValidPath, TAB_INFO_LIST } from '../utils'
 
 export default function RegularTopNavTab() {
   const router = useRouter()
   const pathName = usePathname()
-  const [routePath, setRoutePath] = useState(pathName)
+  const [routePath, setRoutePath] = useState<string | boolean>(false)
 
   const handleChange = (_event: React.SyntheticEvent, newRoutePath: string) => {
     setRoutePath(newRoutePath)
@@ -17,7 +17,7 @@ export default function RegularTopNavTab() {
   }
 
   useEffect(() => {
-    setRoutePath(pathName)
+    setRoutePath(isValidPath(pathName) ? pathName : false)
   }, [pathName])
 
   return (
@@ -26,9 +26,11 @@ export default function RegularTopNavTab() {
       textColor="inherit"
       onChange={handleChange}
       aria-label="Top Navbar Tabs"
+      hideIndicator={!isValidPath(pathName)}
     >
-      <Tab value={PATH_BROWSE} label="Home" />
-      <Tab value={PATH_BROWSE_ABOUT} label="About" />
+      {TAB_INFO_LIST.map(({ path, label }) => (
+        <Tab key={path} value={path} label={label} />
+      ))}
     </Tabs>
   )
 }

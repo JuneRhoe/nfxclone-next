@@ -34,7 +34,7 @@ export default function MediaSliderSkeleton({
           >
             <Skeleton
               variant="rectangular"
-              sx={{ bgcolor: 'grey.900', borderRadius: '0.25rem' }}
+              sx={{ bgcolor: 'grey.800', borderRadius: '0.25rem' }}
               width="100%"
               height="100%"
             />

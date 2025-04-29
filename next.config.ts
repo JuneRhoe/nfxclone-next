@@ -50,7 +50,7 @@ const nextConfig: NextConfig = {
   //   taint: true,
   //   // serverActions: {
   //   //   // allowedOrigins: ['my-proxy.com', '*.my-proxy.com'],
-  //   //   allowedOrigins: [`${process.env.NFXCLONE_DOMAIN}`],
+  //   //   allowedOrigins: [`${process.env.NEXT_PUBLIC_VERCEL_URL}`],
   //   // },
   // },
 }

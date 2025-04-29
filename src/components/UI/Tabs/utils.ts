@@ -3,17 +3,18 @@ import { THEME_MODE } from './Tabs'
 
 export function getTabsStyles(
   themeMode: THEME_MODE | undefined,
+  hideIndicator: boolean | undefined,
 ): CSSProperties {
   switch (themeMode) {
     case 'primary':
     default:
-      return PRIMARY_STYLES
+      return PRIMARY_STYLES(hideIndicator)
     case 'secondary':
-      return SECONDARY_STYLES
+      return SECONDARY_STYLES(hideIndicator)
   }
 }
 
-const PRIMARY_STYLES: CSSProperties = {
+const PRIMARY_STYLES = (hideIndicator: boolean | undefined): CSSProperties => ({
   minHeight: 0,
 
   '& .MuiTabs-list': {
@@ -21,12 +22,15 @@ const PRIMARY_STYLES: CSSProperties = {
   },
 
   '& .MuiTabs-indicator': {
+    display: hideIndicator ? 'none' : 'inline-block',
     backgroundColor: 'white',
     height: '1px',
   },
-}
+})
 
-const SECONDARY_STYLES: CSSProperties = {
+const SECONDARY_STYLES = (
+  hideIndicator: boolean | undefined,
+): CSSProperties => ({
   minHeight: 0,
 
   '& .MuiTabs-list': {
@@ -34,7 +38,8 @@ const SECONDARY_STYLES: CSSProperties = {
   },
 
   '& .MuiTabs-indicator': {
+    display: hideIndicator ? 'none' : 'inline-block',
     backgroundColor: 'white',
     height: '1px',
   },
-}
+})
