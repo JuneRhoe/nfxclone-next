@@ -1,5 +1,6 @@
 'use server'
 
+import { cache } from 'react'
 import { asc, ilike, or, eq, getTableColumns } from 'drizzle-orm'
 import {
   mediaCasts,
@@ -8,7 +9,7 @@ import {
 } from '@/drizzle-definitions/table-aliases'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
 
-export const searchMedias = async (queryKey: string) => {
+export const searchMedias = cache(async (queryKey: string) => {
   return await drizzleDB
     .selectDistinct({
       ...getTableColumns(medias),
@@ -24,4 +25,4 @@ export const searchMedias = async (queryKey: string) => {
       ),
     )
     .orderBy(asc(medias.id))
-}
+})
