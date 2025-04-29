@@ -9,34 +9,42 @@ import {
 } from '@/drizzle-definitions/table-aliases'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
 
+const getMainCategorySize = cache(async () => {
+  return (
+    await drizzleDB
+      .select({ value: countDistinct(mediaMainCategories.id) })
+      .from(mediaMainCategories)
+  )[0].value
+})
+
+const getMorelikeMedias = cache(
+  async (firstCategoryIndex: number, secondCategoryIndex: number) =>
+    await drizzleDB
+      .select({
+        ...getTableColumns(medias),
+      })
+      .from(medias)
+      .where(
+        or(
+          eq(medias.mainCategory, firstCategoryIndex),
+          eq(medias.mainCategory, secondCategoryIndex),
+        ),
+      ),
+)
+
 export const getMoreLikeMedias = cache(async (mainCategory: number) => {
   const firstCategoryIndex = mainCategory
 
-  const categorySizeRecord = await drizzleDB
-    .select({ value: countDistinct(mediaMainCategories.id) })
-    .from(mediaMainCategories)
+  const categorySize = await getMainCategorySize()
 
-  const categorySize = categorySizeRecord[0].value
-
-  const secondCategoryIndex = () => {
+  const getSecondCategoryIndex = () => {
     let secondCategoryIndex = firstCategoryIndex
     while (secondCategoryIndex === firstCategoryIndex) {
       secondCategoryIndex = Math.floor(Math.random() * categorySize + 1)
     }
     return secondCategoryIndex
   }
+  const secondCategoryIndex = getSecondCategoryIndex()
 
-  const morelikeMedias = await drizzleDB
-    .select({
-      ...getTableColumns(medias),
-    })
-    .from(medias)
-    .where(
-      or(
-        eq(medias.mainCategory, firstCategoryIndex),
-        eq(medias.mainCategory, secondCategoryIndex()),
-      ),
-    )
-
-  return morelikeMedias
+  return await getMorelikeMedias(firstCategoryIndex, secondCategoryIndex)
 })

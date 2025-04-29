@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { MediaPreviewVideoProps } from './MediaPreviewVideo'
 import { MediaPreviewImageProps } from './MediaPreviewImage'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
-import { getPreviewMediaInfo } from '../../utils'
+import { getPreviewMediaInfo } from '../../../utils'
 import { useMediaQueryXS } from '@/components/UI/hooks'
 
 const PREVIEW_DELAY = 800

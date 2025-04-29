@@ -65,6 +65,7 @@ export default function MediaSliderItem({
             width="434"
             height="250"
             alt="Slider Item Image"
+            priority
           />
         </div>
       </SliderItem>

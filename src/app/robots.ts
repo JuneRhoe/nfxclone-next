@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: '/private/',
     },
-    sitemap: `https://${process.env.NFXCLONE_DOMAIN}/sitemap.xml`,
+    sitemap: `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/sitemap.xml`,
   }
 }

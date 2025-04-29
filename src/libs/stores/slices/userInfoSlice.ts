@@ -1,7 +1,7 @@
 import { StateCreator } from 'zustand/vanilla'
 import { UserSelect } from '@/drizzle-definitions/data-types'
 
-type UserInfo = Pick<UserSelect, 'id' | 'userId'>
+export type UserInfo = Pick<UserSelect, 'id' | 'userId'>
 
 type UserInfoState = {
   userInfo: UserInfo | null

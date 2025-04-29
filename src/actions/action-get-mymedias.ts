@@ -9,15 +9,18 @@ import {
   usersMyMedias,
 } from '@/drizzle-definitions/table-aliases'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
+import { getUserInfo } from './action-userinfo'
 
-export const getUsersMyMedias = cache(async (userId: string) => {
+export const getUsersMyMedias = cache(async () => {
+  const userId = (await getUserInfo())?.userId || ''
+
   const userUuidRecord = drizzleDB
     .select({ userUuid: nfxCloneUsers.id })
     .from(nfxCloneUsers)
     .where(eq(nfxCloneUsers.userId, userId))
     .limit(1)
 
-  const mediaInfoList = await drizzleDB
+  return await drizzleDB
     .select({
       ...getTableColumns(medias),
     })
@@ -25,6 +28,4 @@ export const getUsersMyMedias = cache(async (userId: string) => {
     .where(eq(usersMyMedias.userUuid, userUuidRecord))
     .innerJoin(medias, eq(usersMyMedias.mediaId, medias.id))
     .orderBy(asc(usersMyMedias.id))
-
-  return mediaInfoList
 })
