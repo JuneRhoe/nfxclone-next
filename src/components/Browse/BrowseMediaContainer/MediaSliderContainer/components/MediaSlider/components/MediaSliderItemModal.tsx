@@ -72,13 +72,14 @@ export default function MediaSliderItemModal({
       }}
     >
       <div
-        className="absolute h-full w-full rounded-md transition-all ease-in-out
+        className="absolute h-full w-full rounded-md transition-all duration-200 ease-in-out
           focus-visible:outline-0"
         style={{
           left: `${showControls ? modalLeft : itemRect.left - 1}px`,
           top: `${showControls ? modalTop : itemRect.top - 1}px`,
           width: `${showControls ? modalWidth : itemRect.width}px`,
           height: `${showControls ? modalHeight : itemRect.height}px`,
+          opacity: `${showControls ? '1' : '0'}`,
           backgroundColor: `${COLOR_BACKGROUND}`,
         }}
         onPointerLeave={(e) => {
