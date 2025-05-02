@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react'
 import Image from 'next/image'
 import {
   faAngleDown,
@@ -8,7 +7,6 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import Modal, { ModalProps } from '@/components/UI/Modal/Modal'
 import ModalBackdrop from '@/components/UI/Modal/ModalBackdrop'
-import Grow from '@mui/material/Grow'
 import { getModalRect } from '../utils'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import { COLOR_BACKGROUND } from '@/styles/styleVariables'
@@ -19,6 +17,9 @@ import { useMyMedias } from '../../MyMediasSlider/hooks'
 interface Props extends Omit<ModalProps, 'children'> {
   mediaInfo: MediaSelect
   itemRect: DOMRect | undefined
+  isFadeIn: boolean
+  isFadeOut: boolean
+  startFadeOut: () => void
   closeModal: () => void
   onShowMoreInfoModal: () => void
 }
@@ -26,37 +27,20 @@ interface Props extends Omit<ModalProps, 'children'> {
 export default function MediaSliderItemModal({
   mediaInfo,
   itemRect,
+  isFadeIn,
+  isFadeOut,
+  startFadeOut,
   closeModal,
   onShowMoreInfoModal,
   ...props
 }: Props) {
-  const [noTransition, setNoTransition] = useState(false)
-
-  useEffect(() => {
-    if (!props.open) {
-      return
-    }
-
-    const handleScroll = () => {
-      setNoTransition(true)
-      closeModal()
-    }
-
-    window.addEventListener('scroll', handleScroll)
-
-    return () => {
-      setNoTransition(false)
-      window.removeEventListener('scroll', handleScroll)
-    }
-  }, [closeModal, props.open])
-
   const {
     isInMyList,
     isAddMyMediaLoading,
     addMyMedia,
     isRemoveMyMediaLoading,
     removeMyMedia,
-  } = useMyMedias(mediaInfo, closeModal)
+  } = useMyMedias(mediaInfo, startFadeOut)
 
   if (!itemRect) {
     return null
@@ -69,56 +53,54 @@ export default function MediaSliderItemModal({
     height: modalHeight,
   } = getModalRect(itemRect)
 
+  const showControls = isFadeIn && !isFadeOut
+
   return (
     <Modal
       {...props}
       open={props.open}
       onClose={closeModal}
-      // closeAfterTransition
       disableScrollLock
-      disableEnforceFocus
+      // disableEnforceFocus
       disableRestoreFocus
       disableAutoFocus
       slots={{ backdrop: ModalBackdrop }}
       slotProps={{
         backdrop: {
-          closeModal,
+          closeModal: startFadeOut,
         },
       }}
     >
-      <Grow
-        in={props.open}
-        style={{ transformOrigin: '50% 50% 0' }}
-        timeout={noTransition ? 0 : 350}
-      >
-        <div
-          className="absolute h-full w-full rounded-md focus-visible:outline-0"
-          style={{
-            left: `${modalLeft}px`,
-            top: `${modalTop}px`,
-            width: `${modalWidth}px`,
-            height: `${modalHeight}px`,
-            backgroundColor: `${COLOR_BACKGROUND}`,
-          }}
-          onPointerLeave={(e) => {
-            if (e.pointerType === 'touch') {
-              return
-            }
+      <div
+        className="absolute h-full w-full rounded-md transition-all ease-in-out
+          focus-visible:outline-0"
+        style={{
+          left: `${showControls ? modalLeft : itemRect.left - 1}px`,
+          top: `${showControls ? modalTop : itemRect.top - 1}px`,
+          width: `${showControls ? modalWidth : itemRect.width}px`,
+          height: `${showControls ? modalHeight : itemRect.height}px`,
+          backgroundColor: `${COLOR_BACKGROUND}`,
+        }}
+        onPointerLeave={(e) => {
+          if (e.pointerType === 'touch') {
+            return
+          }
 
-            closeModal()
-          }}
-        >
-          <div className="h-full w-full">
-            <div className="h-[55%]" onPointerDown={closeModal}>
-              <Image
-                className="w-full rounded-sm"
-                src={getSliderItemTitleImg(mediaInfo.id)}
-                width="434"
-                height="250"
-                alt="Slider Item Image"
-              />
-            </div>
-            <div className="flex h-[45%] items-center justify-center">
+          startFadeOut()
+        }}
+      >
+        <div className="h-full w-full">
+          <div className="h-[55%]" onPointerDown={startFadeOut}>
+            <Image
+              className="w-full rounded-sm"
+              src={getSliderItemTitleImg(mediaInfo.id)}
+              width="434"
+              height="250"
+              alt="Slider Item Image"
+            />
+          </div>
+          <div className="flex h-[45%] items-center justify-center">
+            {showControls && (
               <div className="flex h-full w-full flex-col gap-2 px-3 py-2 text-sm text-white">
                 <div className="flex h-full w-full items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -162,10 +144,10 @@ export default function MediaSliderItemModal({
                   {mediaInfo.genres?.slice(0, 2)?.join(' • ')}
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
-      </Grow>
+      </div>
     </Modal>
   )
 }

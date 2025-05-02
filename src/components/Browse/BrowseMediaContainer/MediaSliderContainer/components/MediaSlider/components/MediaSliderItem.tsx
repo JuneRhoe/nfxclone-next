@@ -24,24 +24,29 @@ export default function MediaSliderItem({
   const {
     itemRect: itemRectSliderItemModal,
     isOpen: isSliderItemModalOpen,
-    openModal: openSliderItemModal,
+    isFadeIn: isSliderItemModalFadeIn,
+    isFadeOut: isSliderItemModalFadeOut,
+    startFadeIn: sliderItemModalStartFadeIn,
+    cancelFadeIn: sliderItemModalCancelFadeIn,
+    startFadeOut: sliderItemModalStartFadeOut,
     closeModal: closeSliderItemModal,
-  } = useMediaSliderItemModal(divRef)
+  } = useMediaSliderItemModal(divRef, isSliding)
 
   const {
     itemRect: itemRectMoreInfoModal,
     isOpen: isMediaMoreInfoModalOpen,
-    openModal: openMediaMoreInfoModal,
-    closeModal: closeMediaMoreInfoModal,
+    isFadeIn: isMoreInfoModalFadeIn,
+    isFadeOut: isMoreInfoModalFadeOut,
+    startFadeIn: moreInfoModalStartFadeIn,
+    startFadeOut: moreInfoModalStartFadeOut,
   } = useMediaMoreInfoModal(divRef)
 
-  const {
-    onTouchStart,
-    onTouchEnd,
-    onPointerOver,
-    onPointerOut,
-    onPointerMove,
-  } = useMediaSliderItem(isSliderItemModalOpen, isSliding, openSliderItemModal)
+  const { onTouchStart, onTouchEnd, onPointerOver, onPointerOut } =
+    useMediaSliderItem(
+      isSliding,
+      sliderItemModalStartFadeIn,
+      sliderItemModalCancelFadeIn,
+    )
 
   return (
     <>
@@ -54,9 +59,11 @@ export default function MediaSliderItem({
           className="relative h-full w-full"
           onTouchStart={onTouchStart}
           onTouchEnd={onTouchEnd}
-          onPointerOver={onPointerOver}
+          onPointerOver={(e) => {
+            onPointerOver(e)
+            divRef.current?.focus()
+          }}
           onPointerOut={onPointerOut}
-          onPointerMove={onPointerMove}
         >
           <span className="m-1" />
           <Image
@@ -70,23 +77,32 @@ export default function MediaSliderItem({
         </div>
       </SliderItem>
 
-      <MediaSliderItemModal
-        mediaInfo={mediaInfo}
-        open={isSliderItemModalOpen}
-        itemRect={itemRectSliderItemModal}
-        closeModal={closeSliderItemModal}
-        onShowMoreInfoModal={() => {
-          closeSliderItemModal()
-          openMediaMoreInfoModal()
-        }}
-      />
+      {isSliderItemModalOpen && (
+        <MediaSliderItemModal
+          mediaInfo={mediaInfo}
+          open={isSliderItemModalOpen}
+          itemRect={itemRectSliderItemModal}
+          isFadeIn={isSliderItemModalFadeIn}
+          isFadeOut={isSliderItemModalFadeOut}
+          startFadeOut={sliderItemModalStartFadeOut}
+          closeModal={closeSliderItemModal}
+          onShowMoreInfoModal={() => {
+            closeSliderItemModal()
+            moreInfoModalStartFadeIn()
+          }}
+        />
+      )}
 
-      <MediaMoreInfoModal
-        mediaInfo={mediaInfo}
-        open={isMediaMoreInfoModalOpen}
-        itemRect={itemRectMoreInfoModal}
-        closeModal={closeMediaMoreInfoModal}
-      />
+      {isMediaMoreInfoModalOpen && (
+        <MediaMoreInfoModal
+          mediaInfo={mediaInfo}
+          open={isMediaMoreInfoModalOpen}
+          itemRect={itemRectMoreInfoModal}
+          isFadeIn={isMoreInfoModalFadeIn}
+          isFadeOut={isMoreInfoModalFadeOut}
+          startFadeOut={moreInfoModalStartFadeOut}
+        />
+      )}
     </>
   )
 }

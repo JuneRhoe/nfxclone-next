@@ -6,8 +6,8 @@ import { useModal } from '@/components/UI/Modal/hooks'
 
 export const PADDING_CLASS = 'px-[1.5rem] sm:px-[2.5rem]'
 
-const OPEN_MODAL_POINTER_DELAY = 200
-const OPEN_MODAL_TOUCH_DELAY = 100
+const OPEN_MODAL_DELAY = 100
+const FADE_TIMER = 300
 
 export function useMediaSlider() {
   return {
@@ -56,36 +56,120 @@ export function useMediaSliderItemSizeInfo(): SliderItemSizeInfo {
 
 export function useMediaSliderItemModal(
   divRef: RefObject<HTMLDivElement | null>,
+  isSliding: boolean,
 ) {
   const { isOpen, openModal, closeModal } = useModal()
+
+  const [isFadeIn, setIsFadeIn] = useState(false)
+  const [isFadeOut, setIsFadeOut] = useState(false)
+
+  const [openTimerId, setOpenTimerId] = useState<NodeJS.Timeout>()
+  const [fadeInTimerId, setFadeInTimerId] = useState<NodeJS.Timeout>()
+  const [fadeOutTimerId, setFadeOutTimerId] = useState<NodeJS.Timeout>()
+  const [closeTimerId, setCloseTimerId] = useState<NodeJS.Timeout>()
+
+  const startFadeIn = () => {
+    clearTimeout(openTimerId)
+
+    setOpenTimerId(
+      setTimeout(() => {
+        openModal()
+
+        clearTimeout(fadeInTimerId)
+
+        setFadeInTimerId(
+          setTimeout(() => {
+            setIsFadeIn(true)
+          }, FADE_TIMER),
+        )
+      }, OPEN_MODAL_DELAY),
+    )
+  }
+
+  const cancelFadeIn = () => {
+    clearTimeout(openTimerId)
+  }
+
+  const startFadeOut = () => {
+    clearTimeout(fadeOutTimerId)
+
+    setFadeOutTimerId(
+      setTimeout(() => {
+        clearTimeout(closeTimerId)
+        setCloseTimerId(undefined)
+        setIsFadeOut(true)
+      }, FADE_TIMER),
+    )
+  }
+
+  useEffect(() => {
+    if (!isOpen) {
+      return
+    }
+
+    const handleScroll = () => {
+      closeModal()
+    }
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [closeModal, isOpen])
+
+  useEffect(() => {
+    if (isOpen) {
+      return
+    }
+
+    setIsFadeIn(false)
+  }, [isOpen])
+
+  useEffect(() => {
+    if (!isSliding) {
+      return
+    }
+
+    clearTimeout(fadeInTimerId)
+    setIsFadeIn(false)
+    closeModal()
+  }, [closeModal, fadeInTimerId, isSliding])
+
+  useEffect(() => {
+    if (!isFadeOut || closeTimerId) {
+      return
+    }
+
+    setCloseTimerId(
+      setTimeout(() => {
+        closeModal()
+        setIsFadeOut(false)
+      }, FADE_TIMER),
+    )
+  }, [closeModal, isFadeOut, closeTimerId])
 
   const itemRect = divRef.current?.getBoundingClientRect()
 
   return {
-    isOpen,
     itemRect,
+    isOpen,
+    isFadeIn,
+    isFadeOut,
+    startFadeIn,
+    cancelFadeIn,
+    startFadeOut,
     openModal,
     closeModal,
   }
 }
 
 export function useMediaSliderItem(
-  isOpen: boolean,
   isSliding: boolean,
-  openModal: () => void,
+  startFadeIn: () => void,
+  cancelFadeIn: () => void,
 ) {
-  const [timerId, setTimerId] = useState<NodeJS.Timeout>()
   const [touchPos, setTouchPos] = useState<TouchPos | null>(null)
-  const [isPointerOver, setIsPointerOver] = useState(false)
-  const [isPointerMove, setIsPointerMove] = useState(false)
-
-  useEffect(() => {
-    if (isPointerOver || isOpen || timerId || !isPointerMove) {
-      return
-    }
-
-    openModal()
-  }, [openModal, isPointerMove, isPointerOver, isOpen, timerId])
 
   const onTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
     setTouchPos({
@@ -108,13 +192,7 @@ export function useMediaSliderItem(
       return
     }
 
-    clearTimeout(timerId)
-
-    setTimerId(
-      setTimeout(() => {
-        openModal()
-      }, OPEN_MODAL_TOUCH_DELAY),
-    )
+    startFadeIn()
   }
 
   const onPointerOver = (e: React.PointerEvent<HTMLDivElement>) => {
@@ -122,30 +200,11 @@ export function useMediaSliderItem(
       return
     }
 
-    setIsPointerOver(true)
-
-    clearTimeout(timerId)
-
-    setTimerId(
-      setTimeout(() => {
-        openModal()
-      }, OPEN_MODAL_POINTER_DELAY),
-    )
+    startFadeIn()
   }
 
   const onPointerOut = () => {
-    setIsPointerOver(false)
-    setIsPointerMove(false)
-
-    clearTimeout(timerId)
-  }
-
-  const onPointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (isSliding || e.pointerType === 'touch') {
-      return
-    }
-
-    setIsPointerMove(true)
+    cancelFadeIn()
   }
 
   return {
@@ -153,6 +212,5 @@ export function useMediaSliderItem(
     onTouchEnd,
     onPointerOver,
     onPointerOut,
-    onPointerMove,
   }
 }
