@@ -16,9 +16,9 @@ import { useMyMedias } from '../../MyMediasSlider/hooks'
 
 interface Props extends Omit<ModalProps, 'children'> {
   mediaInfo: MediaSelect
+  itemRect: DOMRect | undefined
   isFadeIn: boolean
   isFadeOut: boolean
-  itemRect: DOMRect | undefined
   startFadeOut: () => void
   closeModal: () => void
   onShowMoreInfoModal: () => void
@@ -26,9 +26,9 @@ interface Props extends Omit<ModalProps, 'children'> {
 
 export default function MediaSliderItemModal({
   mediaInfo,
+  itemRect,
   isFadeIn,
   isFadeOut,
-  itemRect,
   startFadeOut,
   closeModal,
   onShowMoreInfoModal,
@@ -53,6 +53,8 @@ export default function MediaSliderItemModal({
     height: modalHeight,
   } = getModalRect(itemRect)
 
+  const showControls = isFadeIn && !isFadeOut
+
   return (
     <Modal
       {...props}
@@ -73,10 +75,10 @@ export default function MediaSliderItemModal({
         className="absolute h-full w-full rounded-md transition-all ease-in-out
           focus-visible:outline-0"
         style={{
-          left: `${!isFadeIn || isFadeOut ? itemRect.left - 1 : modalLeft}px`,
-          top: `${!isFadeIn || isFadeOut ? itemRect.top - 1 : modalTop}px`,
-          width: `${!isFadeIn || isFadeOut ? itemRect.width : modalWidth}px`,
-          height: `${!isFadeIn || isFadeOut ? itemRect.height : modalHeight}px`,
+          left: `${showControls ? modalLeft : itemRect.left - 1}px`,
+          top: `${showControls ? modalTop : itemRect.top - 1}px`,
+          width: `${showControls ? modalWidth : itemRect.width}px`,
+          height: `${showControls ? modalHeight : itemRect.height}px`,
           backgroundColor: `${COLOR_BACKGROUND}`,
         }}
         onPointerLeave={(e) => {
@@ -98,7 +100,7 @@ export default function MediaSliderItemModal({
             />
           </div>
           <div className="flex h-[45%] items-center justify-center">
-            {isFadeIn && !isFadeOut && (
+            {showControls && (
               <div className="flex h-full w-full flex-col gap-2 px-3 py-2 text-sm text-white">
                 <div className="flex h-full w-full items-center justify-between">
                   <div className="flex items-center gap-2">

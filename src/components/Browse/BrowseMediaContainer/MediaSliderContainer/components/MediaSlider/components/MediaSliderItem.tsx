@@ -35,8 +35,10 @@ export default function MediaSliderItem({
   const {
     itemRect: itemRectMoreInfoModal,
     isOpen: isMediaMoreInfoModalOpen,
-    openModal: openMediaMoreInfoModal,
-    closeModal: closeMediaMoreInfoModal,
+    isFadeIn: isMoreInfoModalFadeIn,
+    isFadeOut: isMoreInfoModalFadeOut,
+    startFadeIn: moreInfoModalStartFadeIn,
+    startFadeOut: moreInfoModalStartFadeOut,
   } = useMediaMoreInfoModal(divRef)
 
   const { onTouchStart, onTouchEnd, onPointerOver, onPointerOut } =
@@ -79,24 +81,28 @@ export default function MediaSliderItem({
         <MediaSliderItemModal
           mediaInfo={mediaInfo}
           open={isSliderItemModalOpen}
+          itemRect={itemRectSliderItemModal}
           isFadeIn={isSliderItemModalFadeIn}
           isFadeOut={isSliderItemModalFadeOut}
-          itemRect={itemRectSliderItemModal}
           startFadeOut={sliderItemModalStartFadeOut}
           closeModal={closeSliderItemModal}
           onShowMoreInfoModal={() => {
             closeSliderItemModal()
-            openMediaMoreInfoModal()
+            moreInfoModalStartFadeIn()
           }}
         />
       )}
 
-      <MediaMoreInfoModal
-        mediaInfo={mediaInfo}
-        open={isMediaMoreInfoModalOpen}
-        itemRect={itemRectMoreInfoModal}
-        closeModal={closeMediaMoreInfoModal}
-      />
+      {isMediaMoreInfoModalOpen && (
+        <MediaMoreInfoModal
+          mediaInfo={mediaInfo}
+          open={isMediaMoreInfoModalOpen}
+          itemRect={itemRectMoreInfoModal}
+          isFadeIn={isMoreInfoModalFadeIn}
+          isFadeOut={isMoreInfoModalFadeOut}
+          startFadeOut={moreInfoModalStartFadeOut}
+        />
+      )}
     </>
   )
 }

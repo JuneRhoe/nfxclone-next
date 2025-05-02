@@ -7,8 +7,7 @@ import { useModal } from '@/components/UI/Modal/hooks'
 export const PADDING_CLASS = 'px-[1.5rem] sm:px-[2.5rem]'
 
 const OPEN_MODAL_DELAY = 100
-const FADE_IN_TIMER = 300
-const FADE_OUT_TIMER = 300
+const FADE_TIMER = 300
 
 export function useMediaSlider() {
   return {
@@ -81,7 +80,7 @@ export function useMediaSliderItemModal(
         setFadeInTimerId(
           setTimeout(() => {
             setIsFadeIn(true)
-          }, FADE_IN_TIMER),
+          }, FADE_TIMER),
         )
       }, OPEN_MODAL_DELAY),
     )
@@ -97,8 +96,9 @@ export function useMediaSliderItemModal(
     setFadeOutTimerId(
       setTimeout(() => {
         clearTimeout(closeTimerId)
+        setCloseTimerId(undefined)
         setIsFadeOut(true)
-      }, FADE_OUT_TIMER),
+      }, FADE_TIMER),
     )
   }
 
@@ -137,7 +137,7 @@ export function useMediaSliderItemModal(
   }, [closeModal, fadeInTimerId, isSliding])
 
   useEffect(() => {
-    if (!isFadeOut) {
+    if (!isFadeOut || closeTimerId) {
       return
     }
 
@@ -145,9 +145,9 @@ export function useMediaSliderItemModal(
       setTimeout(() => {
         closeModal()
         setIsFadeOut(false)
-      }, FADE_OUT_TIMER),
+      }, FADE_TIMER),
     )
-  }, [closeModal, isFadeOut])
+  }, [closeModal, isFadeOut, closeTimerId])
 
   const itemRect = divRef.current?.getBoundingClientRect()
 

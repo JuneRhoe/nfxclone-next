@@ -25,7 +25,7 @@ export default function MediaPreviewImage({
 }: MediaPreviewImageProps) {
   const moreInfoButtonRef = useRef<HTMLDivElement>(null)
 
-  const { isOpen, openModal, closeModal } =
+  const { isOpen, isFadeIn, isFadeOut, startFadeIn, startFadeOut } =
     useMediaMoreInfoModal(moreInfoButtonRef)
 
   return (
@@ -86,7 +86,7 @@ export default function MediaPreviewImage({
               size="small"
               buttonMode="secondary"
               resizeOnMobile
-              onClick={openModal}
+              onClick={startFadeIn}
             >
               <div
                 ref={moreInfoButtonRef}
@@ -100,12 +100,17 @@ export default function MediaPreviewImage({
         </div>
       </div>
 
-      <MediaMoreInfoModal
-        mediaInfo={mediaInfo}
-        open={isOpen}
-        itemRect={moreInfoButtonRef.current?.getBoundingClientRect()}
-        closeModal={closeModal}
-      />
+      {isOpen && (
+        <MediaMoreInfoModal
+          mediaInfo={mediaInfo}
+          open={isOpen}
+          itemRect={moreInfoButtonRef.current?.getBoundingClientRect()}
+          isFadeIn={isFadeIn}
+          isFadeOut={isFadeOut}
+          startFadeOut={startFadeOut}
+          enableOpacityEffect
+        />
+      )}
     </>
   )
 }

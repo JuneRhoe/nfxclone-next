@@ -15,12 +15,14 @@ import { COLOR_BACKGROUND } from '@/styles/styleVariables'
 
 interface Props {
   mediaInfo: MediaSelect
-  closeModal: () => void
+  showControls: boolean
+  startFadeOut: () => void
 }
 
 export default function MediaMoreInfoModalTop({
   mediaInfo,
-  closeModal,
+  showControls,
+  startFadeOut,
 }: Props) {
   const {
     isInMyList,
@@ -28,7 +30,7 @@ export default function MediaMoreInfoModalTop({
     addMyMedia,
     isRemoveMyMediaLoading,
     removeMyMedia,
-  } = useMyMedias(mediaInfo, closeModal)
+  } = useMyMedias(mediaInfo, startFadeOut)
 
   return (
     <>
@@ -49,37 +51,45 @@ export default function MediaMoreInfoModalTop({
           alt="Browse Preview Title"
         />
       )}
-      <div className="absolute top-[3%] right-[2%]">
-        <IconButton icon={faXmark} buttonMode="dark" onClick={closeModal} />
-      </div>
-      <div
-        className="absolute bottom-[5%] left-[2%] flex items-center gap-2 rounded-md p-1.5 sm:gap-4"
-        style={{ backgroundColor: `${COLOR_BACKGROUND}` }}
-      >
-        <Button
-          size="small"
-          buttonMode="third"
-          resizeOnMobile
-          onClick={() => {}}
-        >
-          <div className="flex w-[4rem] items-center justify-center gap-1">
-            <FontAwesomeIcon icon={faPlay} fixedWidth />
-            Play
+      {showControls && (
+        <>
+          <div className="absolute top-[3%] right-[2%]">
+            <IconButton
+              icon={faXmark}
+              buttonMode="dark"
+              onClick={startFadeOut}
+            />
           </div>
-        </Button>
+          <div
+            className="absolute bottom-[5%] left-[2%] flex items-center gap-2 rounded-md p-1.5 sm:gap-4"
+            style={{ backgroundColor: `${COLOR_BACKGROUND}` }}
+          >
+            <Button
+              size="small"
+              buttonMode="third"
+              resizeOnMobile
+              onClick={() => {}}
+            >
+              <div className="flex w-[4rem] items-center justify-center gap-1">
+                <FontAwesomeIcon icon={faPlay} fixedWidth />
+                Play
+              </div>
+            </Button>
 
-        <IconButton
-          icon={isInMyList ? faCheck : faPlus}
-          loading={isAddMyMediaLoading || isRemoveMyMediaLoading}
-          onClick={() => {
-            if (isInMyList) {
-              removeMyMedia()
-            } else {
-              addMyMedia()
-            }
-          }}
-        />
-      </div>
+            <IconButton
+              icon={isInMyList ? faCheck : faPlus}
+              loading={isAddMyMediaLoading || isRemoveMyMediaLoading}
+              onClick={() => {
+                if (isInMyList) {
+                  removeMyMedia()
+                } else {
+                  addMyMedia()
+                }
+              }}
+            />
+          </div>
+        </>
+      )}
     </>
   )
 }
