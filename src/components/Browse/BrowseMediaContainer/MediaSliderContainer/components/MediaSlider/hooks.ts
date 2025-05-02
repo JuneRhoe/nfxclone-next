@@ -7,7 +7,7 @@ import { useModal } from '@/components/UI/Modal/hooks'
 export const PADDING_CLASS = 'px-[1.5rem] sm:px-[2.5rem]'
 
 const OPEN_MODAL_DELAY = 100
-const FADE_TIMER = 300
+const FADE_TIMER = 200
 
 export function useMediaSlider() {
   return {

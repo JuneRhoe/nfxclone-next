@@ -77,8 +77,8 @@ export default function MediaMoreInfoModal({
     >
       <div
         className={`absolute top-0 left-0 flex h-full w-full items-start justify-center
-          overflow-x-hidden overflow-y-hidden rounded-md transition-all ease-in
-          focus-visible:outline-0`}
+          overflow-x-hidden overflow-y-hidden rounded-md transition-all duration-200
+          ease-in-out focus-visible:outline-0`}
         style={{
           left: `${isFadeIn && !isFadeOut ? 0 : modalLeft}px`,
           top: `${isFadeIn && !isFadeOut ? 0 : modalTop}px`,
