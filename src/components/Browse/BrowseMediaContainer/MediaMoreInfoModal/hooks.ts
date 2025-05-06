@@ -5,75 +5,17 @@ import { useTanstackQuery } from '@/libs/tanstack/hooks'
 import { queryFunction } from '@/libs/tanstack/utils'
 import { QUERY_KEY_MORELIKE_MEDIAS } from '@/libs/tanstack/queryKeys'
 
-export const FADE_TIMER = 200
-
 export function useMediaMoreInfoModal(
   divRef: RefObject<HTMLDivElement | null>,
 ) {
   const { isOpen, openModal, closeModal } = useModal()
-
-  const [isFadeIn, setIsFadeIn] = useState(false)
-  const [isFadeOut, setIsFadeOut] = useState(false)
-
-  const [fadeInTimerId, setFadeInTimerId] = useState<NodeJS.Timeout>()
-  const [fadeOutTimerId, setFadeOutTimerId] = useState<NodeJS.Timeout>()
-  const [closeTimerId, setCloseTimerId] = useState<NodeJS.Timeout>()
-
-  const startFadeIn = () => {
-    openModal()
-
-    clearTimeout(fadeInTimerId)
-
-    setFadeInTimerId(
-      setTimeout(() => {
-        setIsFadeIn(true)
-      }, FADE_TIMER),
-    )
-  }
-
-  const startFadeOut = () => {
-    clearTimeout(fadeOutTimerId)
-
-    setFadeOutTimerId(
-      setTimeout(() => {
-        clearTimeout(closeTimerId)
-        setCloseTimerId(undefined)
-
-        setIsFadeOut(true)
-      }, FADE_TIMER),
-    )
-  }
-
-  useEffect(() => {
-    if (isOpen) {
-      return
-    }
-
-    setIsFadeIn(false)
-  }, [isOpen])
-
-  useEffect(() => {
-    if (!isFadeOut || closeTimerId) {
-      return
-    }
-
-    setCloseTimerId(
-      setTimeout(() => {
-        closeModal()
-        setIsFadeOut(false)
-      }, FADE_TIMER),
-    )
-  }, [closeModal, isFadeOut, closeTimerId])
 
   const itemRect = divRef.current?.getBoundingClientRect()
 
   return {
     isOpen,
     itemRect,
-    isFadeIn,
-    isFadeOut,
-    startFadeIn,
-    startFadeOut,
+    openModal,
     closeModal,
   }
 }

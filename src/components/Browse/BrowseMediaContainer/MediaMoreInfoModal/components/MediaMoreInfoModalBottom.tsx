@@ -3,9 +3,13 @@ import MediaMoreInfoModalMoreLikeThis from './MediaMoreInfoModalMoreLikeThis'
 
 interface Props {
   mediaInfo: MediaSelect
+  isAnimationCompleted: boolean
 }
 
-export default function MediaMoreInfoModalBottom({ mediaInfo }: Props) {
+export default function MediaMoreInfoModalBottom({
+  mediaInfo,
+  isAnimationCompleted,
+}: Props) {
   return (
     <div className="flex flex-col gap-8 p-[3%] text-sm md:text-base">
       <div className="flex w-full items-start justify-between gap-5">
@@ -22,7 +26,10 @@ export default function MediaMoreInfoModalBottom({ mediaInfo }: Props) {
             </div>
           </div>
           <div className="text-base md:text-2xl">{mediaInfo.title}</div>
-          <div>{mediaInfo.description}</div>
+          <div>
+            {mediaInfo.description}
+            {mediaInfo.description}
+          </div>
         </div>
         <div className="flex w-[40%] flex-col gap-2">
           <div className="flex flex-wrap gap-1">
@@ -41,7 +48,9 @@ export default function MediaMoreInfoModalBottom({ mediaInfo }: Props) {
           </div>
         </div>
       </div>
-      <MediaMoreInfoModalMoreLikeThis mediaInfo={mediaInfo} />
+      {isAnimationCompleted && (
+        <MediaMoreInfoModalMoreLikeThis mediaInfo={mediaInfo} />
+      )}
     </div>
   )
 }

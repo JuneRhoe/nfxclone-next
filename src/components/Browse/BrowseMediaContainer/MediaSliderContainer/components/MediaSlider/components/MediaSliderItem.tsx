@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import Image from 'next/image'
+import { AnimatePresence } from 'motion/react'
 import { useMediaSliderItem, useMediaSliderItemModal } from '../hooks'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import SliderItem from '@/components/UI/Slider/components/SliderItem'
@@ -24,29 +25,21 @@ export default function MediaSliderItem({
   const {
     itemRect: itemRectSliderItemModal,
     isOpen: isSliderItemModalOpen,
-    isFadeIn: isSliderItemModalFadeIn,
-    isFadeOut: isSliderItemModalFadeOut,
-    startFadeIn: sliderItemModalStartFadeIn,
-    cancelFadeIn: sliderItemModalCancelFadeIn,
-    startFadeOut: sliderItemModalStartFadeOut,
+    openModal: openSliderItemModal,
     closeModal: closeSliderItemModal,
   } = useMediaSliderItemModal(divRef, isSliding)
 
   const {
     itemRect: itemRectMoreInfoModal,
     isOpen: isMediaMoreInfoModalOpen,
-    isFadeIn: isMoreInfoModalFadeIn,
-    isFadeOut: isMoreInfoModalFadeOut,
-    startFadeIn: moreInfoModalStartFadeIn,
-    startFadeOut: moreInfoModalStartFadeOut,
+    openModal: openMoreInfoModal,
+    closeModal: closeMoreInfoModal,
   } = useMediaMoreInfoModal(divRef)
 
-  const { onTouchStart, onTouchEnd, onPointerOver, onPointerOut } =
-    useMediaSliderItem(
-      isSliding,
-      sliderItemModalStartFadeIn,
-      sliderItemModalCancelFadeIn,
-    )
+  const { onTouchStart, onTouchEnd, onPointerOver } = useMediaSliderItem(
+    isSliding,
+    openSliderItemModal,
+  )
 
   return (
     <>
@@ -63,7 +56,6 @@ export default function MediaSliderItem({
             onPointerOver(e)
             divRef.current?.focus()
           }}
-          onPointerOut={onPointerOut}
         >
           <span className="m-1" />
           <Image
@@ -77,32 +69,30 @@ export default function MediaSliderItem({
         </div>
       </SliderItem>
 
-      {isSliderItemModalOpen && (
-        <MediaSliderItemModal
-          mediaInfo={mediaInfo}
-          open={isSliderItemModalOpen}
-          itemRect={itemRectSliderItemModal}
-          isFadeIn={isSliderItemModalFadeIn}
-          isFadeOut={isSliderItemModalFadeOut}
-          startFadeOut={sliderItemModalStartFadeOut}
-          closeModal={closeSliderItemModal}
-          onShowMoreInfoModal={() => {
-            closeSliderItemModal()
-            moreInfoModalStartFadeIn()
-          }}
-        />
-      )}
+      <AnimatePresence>
+        {isMediaMoreInfoModalOpen && (
+          <MediaMoreInfoModal
+            mediaInfo={mediaInfo}
+            open={isMediaMoreInfoModalOpen}
+            itemRect={itemRectMoreInfoModal}
+            closeModal={closeMoreInfoModal}
+          />
+        )}
 
-      {isMediaMoreInfoModalOpen && (
-        <MediaMoreInfoModal
-          mediaInfo={mediaInfo}
-          open={isMediaMoreInfoModalOpen}
-          itemRect={itemRectMoreInfoModal}
-          isFadeIn={isMoreInfoModalFadeIn}
-          isFadeOut={isMoreInfoModalFadeOut}
-          startFadeOut={moreInfoModalStartFadeOut}
-        />
-      )}
+        {isSliderItemModalOpen && (
+          <MediaSliderItemModal
+            mediaInfo={mediaInfo}
+            open={isSliderItemModalOpen}
+            itemRect={itemRectSliderItemModal}
+            isSliding={isSliding}
+            closeModal={closeSliderItemModal}
+            onShowMoreInfoModal={() => {
+              openMoreInfoModal()
+              closeSliderItemModal()
+            }}
+          />
+        )}
+      </AnimatePresence>
     </>
   )
 }
