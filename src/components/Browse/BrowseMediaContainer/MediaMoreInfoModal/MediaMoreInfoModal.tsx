@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
+import { motion } from 'motion/react'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
 import Modal, { ModalProps } from '@/components/UI/Modal/Modal'
 import { COLOR_BACKGROUND } from '@/styles/styleVariables'
@@ -6,50 +7,24 @@ import MediaMoreInfoModalBackdrop from './components/MediaMoreInfoModalBackdrop'
 import MediaMoreInfoModalTop from './components/MediaMoreInfoModalTop'
 import MediaMoreInfoModalBottom from './components/MediaMoreInfoModalBottom'
 import { getModalRect } from '../MediaSliderContainer/components/MediaSlider/utils'
-import { FADE_TIMER } from './hooks'
 import { useMediaQueryXS } from '@/components/UI/hooks'
 
 interface Props extends Omit<ModalProps, 'children'> {
   mediaInfo: MediaSelect
   itemRect: DOMRect | undefined
-  isFadeIn: boolean
-  isFadeOut: boolean
-  enableOpacityEffect?: boolean
-  startFadeOut: () => void
+  closeModal: () => void
 }
 
 export default function MediaMoreInfoModal({
   mediaInfo,
   itemRect,
-  isFadeIn,
-  isFadeOut,
-  enableOpacityEffect,
-  startFadeOut,
+  closeModal,
   ...props
 }: Props) {
   const divRef = useRef<HTMLDivElement | null>(null)
+  const [isAnimationCompleted, setIsAnimationCompleted] = useState(false)
 
   const isScreenXS = useMediaQueryXS()
-
-  const [timerId, setTimerId] = useState<NodeJS.Timeout>()
-  const [fadeCompleted, setFadeCompleted] = useState(false)
-
-  useEffect(() => {
-    if (fadeCompleted || timerId) {
-      return
-    }
-
-    clearTimeout(timerId)
-    setTimerId(undefined)
-
-    setTimerId(
-      setTimeout(() => {
-        setFadeCompleted(true)
-      }, FADE_TIMER * 2),
-    )
-
-    return () => clearTimeout(timerId)
-  }, [timerId, fadeCompleted])
 
   if (!itemRect) {
     return null
@@ -62,60 +37,88 @@ export default function MediaMoreInfoModal({
     height: modalHeight,
   } = getModalRect(itemRect)
 
-  const showControls = fadeCompleted && !isFadeOut
-
   return (
     <Modal
       {...props}
       open={props.open}
-      onClose={startFadeOut}
+      onClose={closeModal}
       closeAfterTransition
       disableEnforceFocus
       disableRestoreFocus
       slots={{ backdrop: MediaMoreInfoModalBackdrop }}
-      slotProps={{ backdrop: { closeModal: startFadeOut } }}
+      slotProps={{ backdrop: { closeModal } }}
     >
-      <div
-        className={`absolute top-0 left-0 flex h-full w-full items-start justify-center
-          overflow-x-hidden overflow-y-hidden rounded-md transition-all duration-200
-          ease-in-out focus-visible:outline-0`}
+      <motion.div
+        className="absolute top-0 left-0 flex h-full w-full items-start justify-center
+          overflow-x-hidden overflow-y-hidden rounded-md focus-visible:outline-0"
+        initial={{
+          left: `calc(${modalLeft}px - 2rem)`,
+          top: `calc(${modalTop}px - 2rem)`,
+          width: `calc(${modalWidth}px + 4rem)`,
+          height: `calc(${modalHeight}px + 4rem)`,
+          opacity: 0,
+        }}
+        animate={{
+          left: 0,
+          top: 0,
+          width: '100%',
+          height: '100%',
+          opacity: 1,
+          transition: {
+            default: { duration: 0.2, ease: 'easeInOut' },
+          },
+        }}
+        exit={{
+          left: `${modalLeft}px`,
+          top: `${modalTop}px`,
+          width: `${modalWidth}px`,
+          height: `${modalHeight}px`,
+          opacity: 0,
+          transition: {
+            default: { duration: 0.2, ease: 'easeInOut' },
+          },
+        }}
         style={{
-          left: `${isFadeIn && !isFadeOut ? 0 : modalLeft}px`,
-          top: `${isFadeIn && !isFadeOut ? 0 : modalTop}px`,
-          width: `${isFadeIn && !isFadeOut ? '100%' : modalWidth + 'px'}`,
-          height: `${isFadeIn && !isFadeOut ? '100%' : modalHeight + 'px'}`,
-          opacity: `${enableOpacityEffect ? (isFadeIn && !isFadeOut ? '1' : '0') : isFadeOut ? '0.2' : '1'}`,
-          overflowY: `${showControls ? 'auto' : 'hidden'}`,
-          backgroundColor: `${showControls ? '#101010CC' : '#101010'}`,
+          overflowY: `${isAnimationCompleted ? 'auto' : 'hidden'}`,
+          backgroundColor: `${isAnimationCompleted ? '#101010CC' : 'transparent'}`,
         }}
-        onPointerDown={(e) => {
-          if (divRef.current?.contains(e.target as Node)) {
-            return
-          }
-
-          startFadeOut()
-        }}
+        onAnimationStart={() => setIsAnimationCompleted(false)}
+        onAnimationComplete={() => setIsAnimationCompleted(true)}
       >
         <div
-          ref={divRef}
-          className="relative w-[64rem] rounded-t-xl shadow-md"
-          style={{
-            backgroundColor: `${COLOR_BACKGROUND}`,
-            margin: `${isFadeIn ? (isScreenXS ? '1rem' : '2rem') : '0'}`,
+          onPointerDown={(e) => {
+            if (divRef.current?.contains(e.target as Node)) {
+              return
+            }
+
+            closeModal()
           }}
         >
-          <div className="relative w-full">
-            <MediaMoreInfoModalTop
-              showControls={showControls}
-              mediaInfo={mediaInfo}
-              startFadeOut={startFadeOut}
-            />
-          </div>
-          <div>
-            {showControls && <MediaMoreInfoModalBottom mediaInfo={mediaInfo} />}
+          <div
+            ref={divRef}
+            className="relative rounded-t-xl shadow-md"
+            style={{
+              backgroundColor: `${COLOR_BACKGROUND}`,
+              margin: `${isScreenXS ? '1rem' : '2rem'}`,
+            }}
+          >
+            <div className="relative">
+              <MediaMoreInfoModalTop
+                mediaInfo={mediaInfo}
+                isAnimationCompleted={isAnimationCompleted}
+                closeModal={closeModal}
+              />
+            </div>
+
+            <div>
+              <MediaMoreInfoModalBottom
+                mediaInfo={mediaInfo}
+                isAnimationCompleted={isAnimationCompleted}
+              />
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Modal>
   )
 }

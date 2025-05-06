@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { motion } from 'motion/react'
 import Image from 'next/image'
 import {
   faAngleDown,
@@ -13,13 +15,12 @@ import { COLOR_BACKGROUND } from '@/styles/styleVariables'
 import { getSliderItemTitleImg } from '@/components/Browse/utils'
 import IconButton from '@/components/UI/IconButton/IconButton'
 import { useMyMedias } from '../../MyMediasSlider/hooks'
+import { useScrollPos } from '@/components/UI/hooks'
 
 interface Props extends Omit<ModalProps, 'children'> {
   mediaInfo: MediaSelect
   itemRect: DOMRect | undefined
-  isFadeIn: boolean
-  isFadeOut: boolean
-  startFadeOut: () => void
+  isSliding: boolean
   closeModal: () => void
   onShowMoreInfoModal: () => void
 }
@@ -27,22 +28,24 @@ interface Props extends Omit<ModalProps, 'children'> {
 export default function MediaSliderItemModal({
   mediaInfo,
   itemRect,
-  isFadeIn,
-  isFadeOut,
-  startFadeOut,
+  isSliding,
   closeModal,
   onShowMoreInfoModal,
   ...props
 }: Props) {
+  const [isAnimationCompleted, setIsAnimationCompleted] = useState(false)
+
   const {
     isInMyList,
     isAddMyMediaLoading,
     addMyMedia,
     isRemoveMyMediaLoading,
     removeMyMedia,
-  } = useMyMedias(mediaInfo, startFadeOut)
+  } = useMyMedias(mediaInfo, closeModal)
 
-  if (!itemRect) {
+  const { scrollPosY } = useScrollPos()
+
+  if (!itemRect || isSliding || scrollPosY > 0) {
     return null
   }
 
@@ -52,8 +55,6 @@ export default function MediaSliderItemModal({
     width: modalWidth,
     height: modalHeight,
   } = getModalRect(itemRect)
-
-  const showControls = isFadeIn && !isFadeOut
 
   return (
     <Modal
@@ -66,42 +67,50 @@ export default function MediaSliderItemModal({
       disableAutoFocus
       slots={{ backdrop: ModalBackdrop }}
       slotProps={{
-        backdrop: {
-          closeModal: startFadeOut,
-        },
+        backdrop: { closeModal },
       }}
     >
-      <div
-        className="absolute h-full w-full rounded-md transition-all duration-200 ease-in-out
-          focus-visible:outline-0"
-        style={{
-          left: `${showControls ? modalLeft : itemRect.left - 1}px`,
-          top: `${showControls ? modalTop : itemRect.top - 1}px`,
-          width: `${showControls ? modalWidth : itemRect.width}px`,
-          height: `${showControls ? modalHeight : itemRect.height}px`,
-          opacity: `${showControls ? '1' : '0'}`,
-          backgroundColor: `${COLOR_BACKGROUND}`,
+      <motion.div
+        className="absolute h-full w-full rounded-md focus-visible:outline-0"
+        initial={{
+          left: `${itemRect.left - 1}px`,
+          top: `${itemRect.top - 1}px`,
+          width: `${itemRect.width}px`,
+          height: `${itemRect.height}px`,
+          opacity: 0,
         }}
-        onPointerLeave={(e) => {
-          if (e.pointerType === 'touch') {
-            return
-          }
-
-          startFadeOut()
+        animate={{
+          left: `${modalLeft}px`,
+          top: `${modalTop}px`,
+          width: `${modalWidth}px`,
+          height: `${modalHeight}px`,
+          opacity: 1,
+          transition: {
+            default: { duration: 0.2, delay: 0.3, ease: 'easeInOut' },
+          },
         }}
+        exit={{
+          left: `${itemRect.left - 1}px`,
+          top: `${itemRect.top - 1}px`,
+          width: `${itemRect.width}px`,
+          height: `${itemRect.height}px`,
+          transition: { default: { duration: 0.2, ease: 'easeInOut' } },
+        }}
+        style={{ cursor: isAnimationCompleted ? 'auto' : 'pointer' }}
+        onAnimationComplete={() => setIsAnimationCompleted(true)}
       >
-        <div className="h-full w-full">
-          <div className="h-[55%]" onPointerDown={startFadeOut}>
-            <Image
-              className="w-full rounded-sm"
-              src={getSliderItemTitleImg(mediaInfo.id)}
-              width="434"
-              height="250"
-              alt="Slider Item Image"
-            />
-          </div>
-          <div className="flex h-[45%] items-center justify-center">
-            {showControls && (
+        <div style={{ backgroundColor: `${COLOR_BACKGROUND}` }}>
+          <div className="h-full w-full">
+            <div className="h-[55%]" onPointerDown={closeModal}>
+              <Image
+                className="w-full rounded-sm"
+                src={getSliderItemTitleImg(mediaInfo.id)}
+                width="434"
+                height="250"
+                alt="Slider Item Image"
+              />
+            </div>
+            <div className="flex h-[45%] items-center justify-center">
               <div className="flex h-full w-full flex-col gap-2 px-3 py-2 text-sm text-white">
                 <div className="flex h-full w-full items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -145,10 +154,10 @@ export default function MediaSliderItemModal({
                   {mediaInfo.genres?.slice(0, 2)?.join(' • ')}
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </Modal>
   )
 }
