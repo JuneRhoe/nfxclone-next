@@ -15,6 +15,7 @@
 - **[Zustand](https://zustand-demo.pmnd.rs/)** – Simple and powerful global state management
 - **[Tailwind CSS](https://tailwindcss.com/)** – Utility-first CSS framework for responsive design
 - **[Material UI](https://mui.com/)** – Themeable and accessible component library
+- **[Motion](https://motion.dev/)** – A robust animation library for modern web projects
 - **[Drizzle ORM](https://orm.drizzle.team/)** – Type-safe, SQL-first ORM
 
 ### Backend
