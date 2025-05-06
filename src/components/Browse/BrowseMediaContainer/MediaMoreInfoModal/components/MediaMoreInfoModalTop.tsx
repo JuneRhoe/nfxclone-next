@@ -15,14 +15,14 @@ import { COLOR_BACKGROUND } from '@/styles/styleVariables'
 
 interface Props {
   mediaInfo: MediaSelect
-  showControls: boolean
-  startFadeOut: () => void
+  isAnimationCompleted: boolean
+  closeModal: () => void
 }
 
 export default function MediaMoreInfoModalTop({
   mediaInfo,
-  showControls,
-  startFadeOut,
+  isAnimationCompleted,
+  closeModal,
 }: Props) {
   const {
     isInMyList,
@@ -30,17 +30,17 @@ export default function MediaMoreInfoModalTop({
     addMyMedia,
     isRemoveMyMediaLoading,
     removeMyMedia,
-  } = useMyMedias(mediaInfo, startFadeOut)
+  } = useMyMedias(mediaInfo, closeModal)
 
   return (
     <>
       <Image
         className="w-full rounded-t-xl"
         src={mediaInfo.previewMainImg || getSliderItemTitleImg(mediaInfo.id)}
-        width="868"
-        height="500"
+        width="1267"
+        height="713"
         alt="Preview Image"
-        priority
+        // priority
       />
       {mediaInfo.previewTitleImg && (
         <Image
@@ -51,14 +51,10 @@ export default function MediaMoreInfoModalTop({
           alt="Browse Preview Title"
         />
       )}
-      {showControls && (
+      {isAnimationCompleted && (
         <>
           <div className="absolute top-[3%] right-[2%]">
-            <IconButton
-              icon={faXmark}
-              buttonMode="dark"
-              onClick={startFadeOut}
-            />
+            <IconButton icon={faXmark} buttonMode="dark" onClick={closeModal} />
           </div>
           <div
             className="absolute bottom-[5%] left-[2%] flex items-center gap-2 rounded-md p-1.5 sm:gap-4"

@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import Image from 'next/image'
+import { AnimatePresence } from 'motion/react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleInfo, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { MediaSelect } from '@/drizzle-definitions/data-types'
@@ -25,7 +26,7 @@ export default function MediaPreviewImage({
 }: MediaPreviewImageProps) {
   const moreInfoButtonRef = useRef<HTMLDivElement>(null)
 
-  const { isOpen, isFadeIn, isFadeOut, startFadeIn, startFadeOut } =
+  const { isOpen, openModal, closeModal } =
     useMediaMoreInfoModal(moreInfoButtonRef)
 
   return (
@@ -86,7 +87,7 @@ export default function MediaPreviewImage({
               size="small"
               buttonMode="secondary"
               resizeOnMobile
-              onClick={startFadeIn}
+              onClick={openModal}
             >
               <div
                 ref={moreInfoButtonRef}
@@ -100,17 +101,16 @@ export default function MediaPreviewImage({
         </div>
       </div>
 
-      {isOpen && (
-        <MediaMoreInfoModal
-          mediaInfo={mediaInfo}
-          open={isOpen}
-          itemRect={moreInfoButtonRef.current?.getBoundingClientRect()}
-          isFadeIn={isFadeIn}
-          isFadeOut={isFadeOut}
-          startFadeOut={startFadeOut}
-          enableOpacityEffect
-        />
-      )}
+      <AnimatePresence>
+        {isOpen && (
+          <MediaMoreInfoModal
+            mediaInfo={mediaInfo}
+            open={isOpen}
+            itemRect={moreInfoButtonRef.current?.getBoundingClientRect()}
+            closeModal={closeModal}
+          />
+        )}
+      </AnimatePresence>
     </>
   )
 }

@@ -20,6 +20,7 @@ export default function BrowseAbout() {
               <div>Zustand</div>
               <div>Tailwind CSS</div>
               <div>Material UI</div>
+              <div>Motion</div>
               <div>Turbopack</div>
             </div>
           </div>
