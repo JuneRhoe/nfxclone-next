@@ -84,38 +84,35 @@ export default function MediaMoreInfoModal({
         }}
         onAnimationStart={() => setIsAnimationCompleted(false)}
         onAnimationComplete={() => setIsAnimationCompleted(true)}
+        onPointerDown={(e) => {
+          if (divRef.current?.contains(e.target as Node)) {
+            return
+          }
+
+          closeModal()
+        }}
       >
         <div
-          onPointerDown={(e) => {
-            if (divRef.current?.contains(e.target as Node)) {
-              return
-            }
-
-            closeModal()
+          ref={divRef}
+          className="relative max-w-[64rem] rounded-t-xl shadow-md"
+          style={{
+            backgroundColor: `${COLOR_BACKGROUND}`,
+            margin: `${isScreenXS ? '1rem' : '2rem'}`,
           }}
         >
-          <div
-            ref={divRef}
-            className="relative rounded-t-xl shadow-md"
-            style={{
-              backgroundColor: `${COLOR_BACKGROUND}`,
-              margin: `${isScreenXS ? '1rem' : '2rem'}`,
-            }}
-          >
-            <div className="relative">
-              <MediaMoreInfoModalTop
-                mediaInfo={mediaInfo}
-                isAnimationCompleted={isAnimationCompleted}
-                closeModal={closeModal}
-              />
-            </div>
+          <div className="relative">
+            <MediaMoreInfoModalTop
+              mediaInfo={mediaInfo}
+              isAnimationCompleted={isAnimationCompleted}
+              closeModal={closeModal}
+            />
+          </div>
 
-            <div>
-              <MediaMoreInfoModalBottom
-                mediaInfo={mediaInfo}
-                isAnimationCompleted={isAnimationCompleted}
-              />
-            </div>
+          <div>
+            <MediaMoreInfoModalBottom
+              mediaInfo={mediaInfo}
+              isAnimationCompleted={isAnimationCompleted}
+            />
           </div>
         </div>
       </motion.div>
