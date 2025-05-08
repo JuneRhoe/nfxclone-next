@@ -28,7 +28,7 @@ export default function BrowseAbout() {
             <div className="pt-4 pb-1 text-base md:text-xl">Backend</div>
             <div className="flex flex-col text-gray-400">
               <div>NextJS</div>
-              <div>Postgre (Supabase)</div>
+              <div>Postgres (Supabase)</div>
             </div>
           </div>
           <div>
