@@ -11,6 +11,7 @@ export default function TestSignInButton() {
   return (
     <form ref={formRef} action={formAction}>
       <Button
+        className="animate-pulse"
         variant="contained"
         size="medium"
         loading={isTestSignInPending}
