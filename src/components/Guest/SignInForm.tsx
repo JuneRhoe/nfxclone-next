@@ -36,27 +36,36 @@ export function SignInForm() {
       <div className="pb-3 text-3xl font-extrabold">Sign In</div>
 
       <div className="flex flex-col gap-5">
-        <Button
-          size="medium"
-          buttonMode="secondary"
-          onClick={() => {
-            setIsTestSignIn(true)
+        <div className="relative flex items-center p-2">
+          <div
+            className="absolute top-0 left-0 z-0 h-13 w-full animate-pulse border-t-2 border-b-2
+              border-white"
+          />
+          <Button
+            size="medium"
+            fullWidth
+            onClick={() => {
+              setIsTestSignIn(true)
 
-            startTransition(() => {
-              if (!formRef.current) {
-                return
-              }
+              startTransition(() => {
+                if (!formRef.current) {
+                  return
+                }
 
-              const formData = new FormData(formRef.current)
-              formData.set('userId', process.env.NEXT_PUBLIC_TESTID || '')
-              formData.set('userPassword', process.env.NEXT_PUBLIC_TESTPW || '')
-              formAction(formData)
-            })
-          }}
-          loading={isTestSignInPending && isTestSignIn}
-        >
-          Sign In with TEST ID
-        </Button>
+                const formData = new FormData(formRef.current)
+                formData.set('userId', process.env.NEXT_PUBLIC_TESTID || '')
+                formData.set(
+                  'userPassword',
+                  process.env.NEXT_PUBLIC_TESTPW || '',
+                )
+                formAction(formData)
+              })
+            }}
+            loading={isTestSignInPending && isTestSignIn}
+          >
+            Sign In with TEST ID
+          </Button>
+        </div>
 
         <div className="flex w-full justify-center">OR</div>
       </div>
