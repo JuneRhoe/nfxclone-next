@@ -4,10 +4,6 @@ import { type ReactNode, createContext, useRef, useContext } from 'react'
 import { useStore } from 'zustand'
 import { createStore } from 'zustand/vanilla'
 import {
-  CounterStore,
-  createCounterSlice,
-} from '@/libs/stores/slices/counterSlice'
-import {
   ThemeModeStore,
   createThemeModeSlice,
 } from '@/libs/stores/slices/themeModeSlice'
@@ -15,12 +11,11 @@ import { createUserInfoSlice, UserInfoStore } from './slices/userInfoSlice'
 import { createMyMediasSlice, MyMediasStore } from './slices/myMediasSlice'
 
 const createMainStore = () =>
-  createStore<UserInfoStore & MyMediasStore & ThemeModeStore & CounterStore>()(
+  createStore<UserInfoStore & MyMediasStore & ThemeModeStore>()(
     (...inputParams) => ({
       ...createUserInfoSlice(...inputParams),
       ...createMyMediasSlice(...inputParams),
       ...createThemeModeSlice(...inputParams),
-      ...createCounterSlice(...inputParams),
     }),
   )
 
@@ -42,9 +37,7 @@ export const MainStoreProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useMainStore = <T,>(
-  selector: (
-    store: UserInfoStore & MyMediasStore & ThemeModeStore & CounterStore,
-  ) => T,
+  selector: (store: UserInfoStore & MyMediasStore & ThemeModeStore) => T,
 ): T => {
   const mainStoreContext = useContext(MainStoreContext)
 
