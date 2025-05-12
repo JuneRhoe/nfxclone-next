@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 import { motion } from 'motion/react'
 import Image from 'next/image'
 import {
@@ -33,6 +33,7 @@ export default function MediaSliderItemModal({
   onShowMoreInfoModal,
   ...props
 }: Props) {
+  const divRef = useRef<HTMLDivElement | null>(null)
   const [isAnimationCompleted, setIsAnimationCompleted] = useState(false)
 
   const {
@@ -55,6 +56,9 @@ export default function MediaSliderItemModal({
     width: modalWidth,
     height: modalHeight,
   } = getModalRect(itemRect)
+
+  const showBottom =
+    modalWidth > 0 && Math.floor(modalWidth) === divRef.current?.clientWidth
 
   return (
     <Modal
@@ -101,6 +105,7 @@ export default function MediaSliderItemModal({
         onAnimationComplete={() => setIsAnimationCompleted(true)}
       >
         <div
+          ref={divRef}
           className="h-full w-full rounded-md"
           style={{ backgroundColor: `${COLOR_BACKGROUND}` }}
         >
@@ -113,11 +118,14 @@ export default function MediaSliderItemModal({
             onPointerDown={closeModal}
           />
 
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1, transition: { duration: 1 } }}
-          >
-            {isAnimationCompleted && (
+          {isAnimationCompleted && showBottom && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{
+                opacity: 1,
+                transition: { duration: 0.1, delay: 0.05 },
+              }}
+            >
               <div className="flex items-center justify-center">
                 <div className="flex h-full w-full flex-col gap-2 px-3 py-2 text-sm text-white">
                   <div className="flex h-full w-full items-center justify-between">
@@ -163,8 +171,8 @@ export default function MediaSliderItemModal({
                   </div>
                 </div>
               </div>
-            )}
-          </motion.div>
+            </motion.div>
+          )}
         </div>
       </motion.div>
     </Modal>
