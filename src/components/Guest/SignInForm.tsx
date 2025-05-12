@@ -39,7 +39,7 @@ export function SignInForm() {
         <div className="flex flex-col items-center justify-center">
           <div className="flex w-full flex-col gap-2 border-t-3 border-b-3 border-blue-400 py-2">
             <div
-              className="flex animate-pulse justify-center text-center text-base text-xs font-extrabold
+              className="flex animate-pulse justify-center text-center text-base font-extrabold
                 text-blue-400 sm:text-sm"
             >
               * Please click the button below for quick testing.
