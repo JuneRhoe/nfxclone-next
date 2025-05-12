@@ -58,7 +58,8 @@ export default function MediaSliderItemModal({
   } = getModalRect(itemRect)
 
   const showBottom =
-    modalWidth > 0 && Math.floor(modalWidth) === divRef.current?.clientWidth
+    modalWidth > 0 &&
+    Math.floor(modalWidth) <= (divRef.current?.clientWidth || 0)
 
   return (
     <Modal
@@ -90,7 +91,7 @@ export default function MediaSliderItemModal({
           height: `${modalHeight}px`,
           opacity: 1,
           transition: {
-            default: { duration: 0.2, delay: 0.3, ease: 'easeInOut' },
+            default: { duration: 0.15, delay: 0.3, ease: 'easeInOut' },
           },
         }}
         exit={{
