@@ -8,7 +8,6 @@ import Button from '@/components/UI/Button/Button'
 import { getAssetPath } from '@/libs/utils-asset'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'
 import { PATH_ROOT, PATH_SIGN_UP } from '@/libs/definition-route'
-import TestSignInButton from './TestSignInButton'
 
 export default function TopNavBar() {
   const pathname = usePathname()
@@ -40,8 +39,6 @@ export default function TopNavBar() {
       </div>
 
       <div className="flex gap-3">
-        <TestSignInButton />
-
         <Button
           variant="contained"
           size="medium"
