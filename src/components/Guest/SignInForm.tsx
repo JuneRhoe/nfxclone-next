@@ -35,46 +35,6 @@ export function SignInForm() {
     >
       <div className="pb-3 text-3xl font-extrabold">Sign In</div>
 
-      <div className="flex flex-col gap-5">
-        <div className="flex flex-col items-center justify-center">
-          <div className="flex w-full flex-col gap-2 border-t-3 border-b-3 border-blue-400 py-2">
-            <div
-              className="flex animate-pulse justify-center text-center text-base font-extrabold
-                text-blue-400 sm:text-sm"
-            >
-              * Please click the button below for quick testing.
-            </div>
-
-            <Button
-              size="medium"
-              fullWidth
-              onClick={() => {
-                setIsTestSignIn(true)
-
-                startTransition(() => {
-                  if (!formRef.current) {
-                    return
-                  }
-
-                  const formData = new FormData(formRef.current)
-                  formData.set('userId', process.env.NEXT_PUBLIC_TESTID || '')
-                  formData.set(
-                    'userPassword',
-                    process.env.NEXT_PUBLIC_TESTPW || '',
-                  )
-                  formAction(formData)
-                })
-              }}
-              loading={isTestSignInPending && isTestSignIn}
-            >
-              Sign In with TEST ID
-            </Button>
-          </div>
-        </div>
-
-        <div className="flex w-full justify-center">OR</div>
-      </div>
-
       <InputField
         type="text"
         id="userId"
@@ -119,6 +79,39 @@ export function SignInForm() {
             Sign Up now.
           </span>
         </Link>
+      </div>
+
+      <div className="flex w-full justify-center py-2">OR</div>
+
+      <div className="flex flex-col gap-5">
+        <div className="flex flex-col items-center justify-center">
+          <Button
+            size="medium"
+            fullWidth
+            onClick={() => {
+              setIsTestSignIn(true)
+
+              startTransition(() => {
+                if (!formRef.current) {
+                  return
+                }
+
+                const formData = new FormData(formRef.current)
+                formData.set('userId', process.env.NEXT_PUBLIC_TESTID || '')
+                formData.set(
+                  'userPassword',
+                  process.env.NEXT_PUBLIC_TESTPW || '',
+                )
+                formAction(formData)
+              })
+            }}
+            loading={isTestSignInPending && isTestSignIn}
+          >
+            <span className="text-xl font-extrabold">
+              Try Now – No Signup Needed
+            </span>
+          </Button>
+        </div>
       </div>
     </form>
   )
