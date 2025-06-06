@@ -16,6 +16,7 @@ import { PATH_SIGN_UP } from '@/libs/definition-route'
 import { getClientCookieValue } from '@/libs/cookie/utils'
 import { COOKIE_USER_AUTO_REGISTERED } from '@/libs/cookie/cookieDefinitions'
 import { autoRegister } from '@/actions/action-auto-register'
+import { nanoid } from 'nanoid'
 
 export function SignInForm() {
   const searchParams = useSearchParams()
@@ -46,16 +47,28 @@ export function SignInForm() {
   }, [])
 
   useEffect(() => {
-    if (isAutoRegistered !== false) {
+    if (isAutoRegistered !== false || userId || userPassword) {
+      return
+    }
+
+    const tmpUserId = `TEST-${nanoid()}`
+    const tmpUserPassword = nanoid()
+
+    setUserId(tmpUserId)
+    setUserPassword(tmpUserPassword)
+  }, [isAutoRegistered, userId, userPassword])
+
+  useEffect(() => {
+    if (isAutoRegistered !== false || !userId || !userPassword) {
       return
     }
 
     const executeAutoRegister = async () => {
-      await autoRegister()
+      await autoRegister(userId, userPassword)
     }
 
     executeAutoRegister()
-  }, [isAutoRegistered])
+  }, [isAutoRegistered, userId, userPassword])
 
   const isAutoRegistering = isAutoRegistered === false
 
@@ -77,7 +90,6 @@ export function SignInForm() {
         size="small"
         helperText={<span>{formState?.errors?.userId?.at(0)}</span>}
         error={!!formState?.errors?.userId}
-        disabled={isPending || isAutoRegistering}
         onChange={(e) => setUserId(e.target.value)}
       />
       <InputField
@@ -89,7 +101,6 @@ export function SignInForm() {
         size="small"
         helperText={<span>{formState?.errors?.userPassword}</span>}
         error={!!formState?.errors?.userPassword}
-        disabled={isPending || isAutoRegistering}
         onChange={(e) => setUserPassword(e.target.value)}
       />
 
@@ -128,6 +139,12 @@ export function SignInForm() {
             fullWidth
             loading={(isTestSignInPending && isTestSignIn) || isAutoRegistering}
             onClick={() => {
+              const tmpUserId = process.env.NEXT_PUBLIC_TESTID || ''
+              const tmpUserPassword = process.env.NEXT_PUBLIC_TESTPW || ''
+
+              setUserId(tmpUserId)
+              setUserPassword(tmpUserPassword)
+
               setIsTestSignIn(true)
 
               startTransition(() => {
@@ -136,11 +153,8 @@ export function SignInForm() {
                 }
 
                 const formData = new FormData(formRef.current)
-                formData.set('userId', process.env.NEXT_PUBLIC_TESTID || '')
-                formData.set(
-                  'userPassword',
-                  process.env.NEXT_PUBLIC_TESTPW || '',
-                )
+                formData.set('userId', tmpUserId)
+                formData.set('userPassword', tmpUserPassword)
                 formAction(formData)
               })
             }}
