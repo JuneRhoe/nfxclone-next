@@ -31,7 +31,6 @@ export function useTanstackQuery<
           TQueryFnData,
           TError,
           TData,
-          TQueryFnData,
           TQueryKey,
           TPageParam
         >['queryFn'],
