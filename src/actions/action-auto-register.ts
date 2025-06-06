@@ -12,17 +12,16 @@ import {
   COOKIE_EXPIRATION_TIME,
   COOKIE_USER_AUTO_REGISTERED,
 } from '@/libs/cookie/cookieDefinitions'
-import { nanoid } from 'nanoid'
 
-export async function autoRegister() {
+export async function autoRegister(userId: string, userPassword: string) {
   let insertedUser = null
 
   try {
     const insertedRecords = await drizzleDB
       .insert(nfxCloneUsers)
       .values({
-        userId: `TEST-${nanoid()}`,
-        userPassword: encryptData(nanoid()),
+        userId,
+        userPassword: encryptData(userPassword),
       })
       .returning({ userId: nfxCloneUsers.userId })
 
