@@ -1,12 +1,21 @@
 'use client'
 
-import { useActionState, useRef, useState, useTransition } from 'react'
+import {
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from 'react'
 import { useSearchParams } from 'next/navigation'
 import Link from '@mui/material/Link'
 import InputField from '@/components/UI/InputField/InputField'
 import Button from '@/components/UI/Button/Button'
 import { signIn } from '@/actions/action-signin'
 import { PATH_SIGN_UP } from '@/libs/definition-route'
+import { getClientCookieValue } from '@/libs/cookie/utils'
+import { COOKIE_USER_AUTO_REGISTERED } from '@/libs/cookie/cookieDefinitions'
+import { autoRegister } from '@/actions/action-auto-register'
 
 export function SignInForm() {
   const searchParams = useSearchParams()
@@ -26,6 +35,30 @@ export function SignInForm() {
 
   const formRef = useRef<HTMLFormElement>(null)
 
+  const [isAutoRegistered, setIsAutoRegistered] = useState<boolean | undefined>(
+    undefined,
+  )
+
+  useEffect(() => {
+    setIsAutoRegistered(
+      getClientCookieValue(COOKIE_USER_AUTO_REGISTERED) === 'true',
+    )
+  }, [])
+
+  useEffect(() => {
+    if (isAutoRegistered !== false) {
+      return
+    }
+
+    const executeAutoRegister = async () => {
+      await autoRegister()
+    }
+
+    executeAutoRegister()
+  }, [isAutoRegistered])
+
+  const isAutoRegistering = isAutoRegistered === false
+
   return (
     <form
       ref={formRef}
@@ -44,7 +77,7 @@ export function SignInForm() {
         size="small"
         helperText={<span>{formState?.errors?.userId?.at(0)}</span>}
         error={!!formState?.errors?.userId}
-        disabled={isPending}
+        disabled={isPending || isAutoRegistering}
         onChange={(e) => setUserId(e.target.value)}
       />
       <InputField
@@ -56,7 +89,7 @@ export function SignInForm() {
         size="small"
         helperText={<span>{formState?.errors?.userPassword}</span>}
         error={!!formState?.errors?.userPassword}
-        disabled={isPending}
+        disabled={isPending || isAutoRegistering}
         onChange={(e) => setUserPassword(e.target.value)}
       />
 
@@ -68,7 +101,12 @@ export function SignInForm() {
         </div>
       )}
 
-      <Button type="submit" size="medium" loading={isPending && !isTestSignIn}>
+      <Button
+        type="submit"
+        size="medium"
+        loading={isPending && !isTestSignIn}
+        disabled={isTestSignIn || isAutoRegistering}
+      >
         Sign In
       </Button>
 
@@ -88,6 +126,7 @@ export function SignInForm() {
           <Button
             size="medium"
             fullWidth
+            loading={(isTestSignInPending && isTestSignIn) || isAutoRegistering}
             onClick={() => {
               setIsTestSignIn(true)
 
@@ -105,7 +144,6 @@ export function SignInForm() {
                 formAction(formData)
               })
             }}
-            loading={isTestSignInPending && isTestSignIn}
           >
             <span className="text-xl font-extrabold">
               Try Now – No Signup Needed

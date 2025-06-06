@@ -7,6 +7,8 @@ export const COOKIE_ENCRYPT_KEY = new TextEncoder().encode(
   process.env.SESSION_SECRET,
 )
 
+export const COOKIE_USER_AUTO_REGISTERED = 'nfxcln_user_auto_registered'
+
 export type SessionPayload = {
   id: string
   userId: string
