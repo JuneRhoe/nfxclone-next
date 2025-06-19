@@ -9,6 +9,8 @@ import MediaMoreInfoModalBottom from './components/MediaMoreInfoModalBottom'
 import { getModalRect } from '../MediaSliderContainer/components/MediaSlider/utils'
 import { useMediaQueryXS } from '@/components/UI/hooks'
 
+const SCROLLBAR_WIDTH = 16
+
 interface Props extends Omit<ModalProps, 'children'> {
   mediaInfo: MediaSelect
   itemRect: DOMRect | undefined
@@ -76,6 +78,10 @@ export default function MediaMoreInfoModal({
         onAnimationComplete={() => setIsAnimationCompleted(true)}
         onPointerDown={(e) => {
           if (divRef.current?.contains(e.target as Node)) {
+            return
+          }
+
+          if (e.clientX >= window.innerWidth - SCROLLBAR_WIDTH) {
             return
           }
 
