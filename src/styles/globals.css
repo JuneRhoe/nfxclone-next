@@ -18,14 +18,12 @@
   .transparent-scrollbar {
     scrollbar-color: transparent transparent;
     scrollbar-width: thin;
+    -webkit-overflow-scrolling: auto;
   }
 
   .transparent-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .transparent-scrollbar::-webkit-scrollbar-thumb {
-    background-color: transparent;
+    overflow-y: auto;
+    display: none;
   }
 }
 
