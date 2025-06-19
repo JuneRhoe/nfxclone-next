@@ -57,7 +57,7 @@ export default function MediaMoreInfoModal({
     >
       <motion.div
         className={`absolute top-0 left-0 flex h-full w-full items-start justify-center
-          overflow-x-hidden overflow-y-scroll rounded-md focus-visible:outline-0
+          overflow-x-hidden overflow-y-auto rounded-md focus-visible:outline-0
           ${isAnimationCompleted ? '' : 'transparent-scrollbar'}`}
         initial={modalPos}
         exit={modalPos}
@@ -70,6 +70,7 @@ export default function MediaMoreInfoModal({
         transition={{ duration: 0.25, ease: 'easeInOut' }}
         style={{
           backgroundColor: `${isAnimationCompleted ? '#101010CC' : 'transparent'}`,
+          scrollbarGutter: 'stable',
         }}
         onAnimationStart={() => setIsAnimationCompleted(false)}
         onAnimationComplete={() => setIsAnimationCompleted(true)}
