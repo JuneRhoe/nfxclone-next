@@ -37,6 +37,13 @@ export default function MediaMoreInfoModal({
     height: modalHeight,
   } = getModalRect(itemRect)
 
+  const modalPos = {
+    x: modalLeft + modalWidth / 2 - window.innerWidth / 2,
+    y: modalTop + modalHeight / 2 - window.innerHeight / 2,
+    scale: modalWidth / window.innerWidth || 0.8,
+    opacity: 0,
+  }
+
   return (
     <Modal
       {...props}
@@ -49,37 +56,19 @@ export default function MediaMoreInfoModal({
       slotProps={{ backdrop: { closeModal } }}
     >
       <motion.div
-        className="absolute top-0 left-0 flex h-full w-full items-start justify-center
-          overflow-x-hidden overflow-y-hidden rounded-md focus-visible:outline-0"
-        initial={{
-          left: `calc(${modalLeft}px - 2rem)`,
-          top: `calc(${modalTop}px - 2rem)`,
-          width: `calc(${modalWidth}px + 4rem)`,
-          height: `calc(${modalHeight}px + 4rem)`,
-          opacity: 0,
-        }}
+        className={`absolute top-0 left-0 flex h-full w-full items-start justify-center
+          overflow-x-hidden overflow-y-scroll rounded-md focus-visible:outline-0
+          ${isAnimationCompleted ? '' : 'transparent-scrollbar'}`}
+        initial={modalPos}
+        exit={modalPos}
         animate={{
-          left: 0,
-          top: 0,
-          width: '100%',
-          height: '100%',
+          x: 0,
+          y: 0,
+          scale: 1,
           opacity: 1,
-          transition: {
-            default: { duration: 0.2, ease: 'easeInOut' },
-          },
         }}
-        exit={{
-          left: `${modalLeft}px`,
-          top: `${modalTop}px`,
-          width: `${modalWidth}px`,
-          height: `${modalHeight}px`,
-          opacity: 0,
-          transition: {
-            default: { duration: 0.2, ease: 'easeInOut' },
-          },
-        }}
+        transition={{ duration: 0.25, ease: 'easeInOut' }}
         style={{
-          overflowY: `${isAnimationCompleted ? 'auto' : 'hidden'}`,
           backgroundColor: `${isAnimationCompleted ? '#101010CC' : 'transparent'}`,
         }}
         onAnimationStart={() => setIsAnimationCompleted(false)}
