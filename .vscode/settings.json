@@ -2,6 +2,11 @@
   "files.associations": {
     "*.css": "tailwindcss"
   },
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit",
+    "source.fixAll.eslint": "explicit"
+  },
   "editor.quickSuggestions": {
     "strings": "on"
   },
