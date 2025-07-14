@@ -40,11 +40,12 @@ export function SignInForm() {
     undefined,
   )
 
-  const isAutoRegisterAllowed = process.env.NEXT_PUBLIC_ALLOW_AUTO_REGISTER === '1'
+  const isAutoRegisterAllowed =
+    process.env.NEXT_PUBLIC_ALLOW_AUTO_REGISTER === '1'
 
   useEffect(() => {
     setIsAutoRegistered(
-      getClientCookieValue(COOKIE_USER_AUTO_REGISTERED) === 'true'
+      getClientCookieValue(COOKIE_USER_AUTO_REGISTERED) === 'true',
     )
   }, [])
 
@@ -62,7 +63,7 @@ export function SignInForm() {
 
     setUserId(tmpUserId)
     setUserPassword(tmpUserPassword)
-  }, [isAutoRegistered, userId, userPassword])
+  }, [isAutoRegisterAllowed, isAutoRegistered, userId, userPassword])
 
   useEffect(() => {
     if (!isAutoRegisterAllowed) {
@@ -78,7 +79,7 @@ export function SignInForm() {
     }
 
     executeAutoRegister()
-  }, [isAutoRegistered, userId, userPassword])
+  }, [isAutoRegisterAllowed, isAutoRegistered, userId, userPassword])
 
   const isAutoRegistering = isAutoRegistered === false && isAutoRegisterAllowed
 
