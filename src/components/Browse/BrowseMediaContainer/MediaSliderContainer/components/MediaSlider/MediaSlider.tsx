@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import MediaSliderNavigator from './components/MediaSliderNavigator'
 import MediaSliderNavButton from './components/MediaSliderNavButton'
 import MediaSliderItem from './components/MediaSliderItem'
@@ -43,6 +44,7 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
   }
 
   const mediaLength = medias?.length || 0
+  const itemArray = Array.from(Array(countPerPage).keys())
 
   if (!medias || (mediaLength > 0 && displayItems.length < 1)) {
     return (
@@ -51,6 +53,37 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
         countPerPage={countPerPage}
         itemSize={itemSize}
       />
+    )
+  }
+
+  if (placeholder && mediaLength < 1) {
+    return (
+      <div className="flex flex-col gap-2">
+        {title && (
+          <div className={paddingClass}>
+            <div className="flex w-full items-center justify-between">
+              <div className="text-base sm:text-xl">{title}</div>
+            </div>
+          </div>
+        )}
+        <div
+          className={clsx(
+            'relative flex w-full items-center justify-center gap-1',
+            paddingClass,
+          )}
+        >
+          {itemArray.map((i) => (
+            <div
+              key={i}
+              className="aspect-9/5 h-auto"
+              style={{ width: `${itemSize}%` }}
+            />
+          ))}
+          <div className="absolute">
+            Please add movies and tv shows to My List
+          </div>
+        </div>
+      </div>
     )
   }
 
@@ -74,50 +107,36 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
           </div>
         )}
 
-        {placeholder && mediaLength < 1 ? (
-          <div
-            className="w-full"
-            style={{ aspectRatio: `${(9 * countPerPage) / 5}` }}
-          >
-            <div
-              className="flex h-full w-full items-center justify-center p-5 text-base text-gray-400
-                text-shadow-gray-800 text-shadow-lg"
+        <Slider className={paddingClass}>
+          <>
+            <MediaSliderNavButton
+              direction="Prev"
+              disabled={!isPrevButtonVisible}
+              onClick={() => handleNavButtonClickedDebouncer('Prev')}
+            />
+
+            <SliderItemContainer
+              vectorX={`${vectorX}%`}
+              disableTransition={disableTransition}
+              onTransitionEnd={() => setIsSliding(false)}
             >
-              Please add movies and tv shows to My List
-            </div>
-          </div>
-        ) : (
-          <Slider className={paddingClass}>
-            <>
-              <MediaSliderNavButton
-                direction="Prev"
-                disabled={!isPrevButtonVisible}
-                onClick={() => handleNavButtonClickedDebouncer('Prev')}
-              />
+              {displayItems.map((mediaInfo, i) => (
+                <MediaSliderItem
+                  key={i}
+                  mediaInfo={mediaInfo}
+                  itemSize={itemSize}
+                  isSliding={isSliding}
+                />
+              ))}
+            </SliderItemContainer>
 
-              <SliderItemContainer
-                vectorX={`${vectorX}%`}
-                disableTransition={disableTransition}
-                onTransitionEnd={() => setIsSliding(false)}
-              >
-                {displayItems.map((mediaInfo, i) => (
-                  <MediaSliderItem
-                    key={i}
-                    mediaInfo={mediaInfo}
-                    itemSize={itemSize}
-                    isSliding={isSliding}
-                  />
-                ))}
-              </SliderItemContainer>
-
-              <MediaSliderNavButton
-                direction="Next"
-                disabled={!isNextButtonVisible}
-                onClick={() => handleNavButtonClickedDebouncer('Next')}
-              />
-            </>
-          </Slider>
-        )}
+            <MediaSliderNavButton
+              direction="Next"
+              disabled={!isNextButtonVisible}
+              onClick={() => handleNavButtonClickedDebouncer('Next')}
+            />
+          </>
+        </Slider>
       </div>
     </>
   )
