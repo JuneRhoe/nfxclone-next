@@ -9,7 +9,7 @@ import {
 } from '@/drizzle-definitions/table-aliases'
 import { drizzleDB } from '@/libs/drizzle/drizzle-db'
 
-export const searchMedias = cache(async (queryKey: string) => {
+export const searchMedias = cache(async (searchKey: string) => {
   return await drizzleDB
     .selectDistinct({
       ...getTableColumns(medias),
@@ -19,9 +19,9 @@ export const searchMedias = cache(async (queryKey: string) => {
     .innerJoin(mediaGenres, eq(medias.id, mediaGenres.mediaId))
     .where(
       or(
-        ilike(medias.title, `%${queryKey}%`),
-        ilike(mediaCasts.cast, `%${queryKey}%`),
-        ilike(mediaGenres.genre, `%${queryKey}%`),
+        ilike(medias.title, `%${searchKey}%`),
+        ilike(mediaCasts.cast, `%${searchKey}%`),
+        ilike(mediaGenres.genre, `%${searchKey}%`),
       ),
     )
     .orderBy(asc(medias.id))
