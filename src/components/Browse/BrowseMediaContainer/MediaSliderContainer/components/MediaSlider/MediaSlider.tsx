@@ -79,7 +79,7 @@ export default function MediaSlider({ medias, title, placeholder }: Props) {
               style={{ width: `${itemSize}%` }}
             />
           ))}
-          <div className="absolute">
+          <div className="absolute p-5 text-base text-gray-400 text-shadow-gray-800 text-shadow-lg">
             Please add movies and tv shows to My List
           </div>
         </div>

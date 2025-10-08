@@ -1,9 +1,5 @@
-import BrowseSearchServer from '@/components/Browse/BrowseSearch/BrowseSearchServer'
+import BrowseSearch from '@/components/Browse/BrowseSearch/BrowseSearch'
 
-export default function SearchPage({
-  searchParams,
-}: {
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
-}) {
-  return <BrowseSearchServer searchParams={searchParams} />
+export default function SearchPage() {
+  return <BrowseSearch />
 }

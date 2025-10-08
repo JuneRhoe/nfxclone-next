@@ -1,12 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { usePathname, useRouter, useSearchParams } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faMagnifyingGlass, faXmark } from '@fortawesome/free-solid-svg-icons'
 import { PATH_BROWSE, PATH_BROWSE_SEARCH } from '@/libs/definition-route'
 import { useMediaQueryXS } from '@/components/UI/hooks'
 import { useDebouncedCallback } from 'use-debounce'
+import { useMainStore } from '@/libs/stores/mainStoreProvider'
 
-const SEARH_INPUT_DELAY = 500
+const SEARCH_INPUT_DELAY = 500
 
 interface Props {
   navTapRef: React.RefObject<HTMLDivElement | null>
@@ -16,11 +17,14 @@ export function SearchInput({ navTapRef }: Props) {
   const is2XS = useMediaQueryXS()
   const router = useRouter()
   const pathname = usePathname()
-  const searchParams = useSearchParams()
-  const queryKeyParam = searchParams.get('k') || ''
+
+  const { removeSearchKeyAction, setSearchKeyAction } = useMainStore(
+    (state) => state,
+  )
+
   const inputRef = useRef<HTMLInputElement>(null)
 
-  const [queryKey, setQueryKey] = useState(queryKeyParam)
+  const [queryKey, setQueryKey] = useState('')
   const [showInput, setShowInput] = useState(pathname === PATH_BROWSE_SEARCH)
   const [prevPath, setPrevPath] = useState<string>(PATH_BROWSE)
 
@@ -28,13 +32,13 @@ export function SearchInput({ navTapRef }: Props) {
 
   const routeDebouncer = useDebouncedCallback(() => {
     if (queryKey) {
-      const searchParam = new URLSearchParams()
-      searchParam.append('k', queryKey)
-      router.push(`${PATH_BROWSE_SEARCH}?${searchParam}`)
+      setSearchKeyAction(queryKey)
+      router.push(PATH_BROWSE_SEARCH)
     } else {
+      removeSearchKeyAction()
       router.push(prevPath)
     }
-  }, SEARH_INPUT_DELAY)
+  }, SEARCH_INPUT_DELAY)
 
   useEffect(() => {
     const handleClick = (e: PointerEvent | MouseEvent) => {
@@ -70,7 +74,20 @@ export function SearchInput({ navTapRef }: Props) {
   }
 
   return (
-    <>
+    <div className="flex items-center gap-2">
+      <div>
+        <button
+          className="cursor-pointer text-gray-200 transition-colors duration-300 text-shadow-gray-800
+            text-shadow-lg hover:text-gray-400"
+          onClick={() => {
+            setPrevPath(pathname)
+            setShowInput(true)
+            inputRef.current?.focus()
+          }}
+        >
+          AI Search
+        </button>
+      </div>
       <div
         className="flex items-center justify-center bg-black outline-0"
         style={{
@@ -103,7 +120,7 @@ export function SearchInput({ navTapRef }: Props) {
             paddingRight: showInput ? '0.5rem' : '0',
           }}
           autoComplete="new-password"
-          placeholder={showInput ? 'Title, people, genres' : ''}
+          placeholder={showInput ? 'Ask AI for movies or shows...' : ''}
           onKeyUp={(e) => {
             if (hasKeyword || e.key !== 'Escape') {
               return
@@ -134,6 +151,6 @@ export function SearchInput({ navTapRef }: Props) {
           />
         )}
       </div>
-    </>
+    </div>
   )
 }
