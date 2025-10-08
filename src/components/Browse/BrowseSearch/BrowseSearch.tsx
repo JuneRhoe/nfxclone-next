@@ -59,11 +59,27 @@ export default function BrowseSearch() {
                   {searchResult?.parsedFilters.genres?.join(', ')}
                 </div>
               </div>
+              {(searchResult?.parsedFilters.casts?.length || 0) > 0 && (
+                <div className="flex gap-1">
+                  <div className="text-xs text-gray-400">Casts: </div>
+                  <div className="text-xs text-gray-500">
+                    {searchResult?.parsedFilters.casts?.join(', ')}
+                  </div>
+                </div>
+              )}
               {(searchResult?.parsedFilters.impressions?.length || 0) > 0 && (
                 <div className="flex gap-1">
                   <div className="text-xs text-gray-400">Impressions: </div>
                   <div className="text-xs text-gray-500">
                     {searchResult?.parsedFilters.impressions?.join(', ')}
+                  </div>
+                </div>
+              )}
+              {searchResult?.error && (
+                <div className="flex gap-1">
+                  <div className="text-xs text-gray-400">Error: </div>
+                  <div className="text-xs text-gray-500">
+                    {searchResult?.error}
                   </div>
                 </div>
               )}
