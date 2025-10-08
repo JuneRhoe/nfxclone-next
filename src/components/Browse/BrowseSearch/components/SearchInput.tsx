@@ -7,7 +7,7 @@ import { useMediaQueryXS } from '@/components/UI/hooks'
 import { useDebouncedCallback } from 'use-debounce'
 import { useMainStore } from '@/libs/stores/mainStoreProvider'
 
-const SEARCH_INPUT_DELAY = 500
+const SEARCH_INPUT_DELAY = 1000
 
 interface Props {
   navTapRef: React.RefObject<HTMLDivElement | null>
