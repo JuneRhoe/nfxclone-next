@@ -1,5 +1,7 @@
 const API_URL = `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/api/`
 
+type METHOD_TYPE = 'GET' | 'POST'
+
 interface SearchParamInfo {
   name: string
   value: string
@@ -8,22 +10,44 @@ interface SearchParamInfo {
 export async function queryFunction(
   endPoint: string,
   paramInfos: SearchParamInfo[] = [],
+  method: METHOD_TYPE = 'GET',
+  isExternal: boolean = false,
 ): Promise<Response | null> {
-  const url = new URL(`${API_URL}${endPoint}`)
-
-  for (const paramInfo of paramInfos) {
-    url.searchParams.append(paramInfo.name, paramInfo.value)
-  }
+  const url = new URL(isExternal ? endPoint : `${API_URL}${endPoint}`)
 
   let response: Response | null = null
 
-  try {
-    response = await fetch(url, {
-      method: 'GET',
-      headers: { 'content-type': 'application/json' },
-    })
-  } catch (e) {
-    console.error(e)
+  if (method === 'GET') {
+    for (const paramInfo of paramInfos) {
+      url.searchParams.append(paramInfo.name, paramInfo.value)
+    }
+
+    try {
+      response = await fetch(url, {
+        method,
+        headers: { 'content-type': 'application/json' },
+      })
+    } catch (e) {
+      console.error(e)
+    }
+  } else {
+    const bodyData = paramInfos.reduce<Record<string, string>>(
+      (acc, { name, value }) => {
+        acc[name] = value
+        return acc
+      },
+      {},
+    )
+
+    try {
+      response = await fetch(url, {
+        method,
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify(bodyData),
+      })
+    } catch (e) {
+      console.error(e)
+    }
   }
 
   return response
