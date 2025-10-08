@@ -7,7 +7,8 @@ import {
   ParsedFilters,
   ParsedFiltersSchema,
 } from 'types/filters'
-import { aiSearchMedias } from '@/actions/action-ai-search'
+import { aiSearchMedias, SearchResult } from '@/actions/action-ai-search'
+import { searchMedias } from '@/actions/action-search-medias'
 
 export const runtime = 'nodejs'
 
@@ -56,68 +57,92 @@ export async function POST(req: NextRequest) {
       ? { type: 'string', enum: allowedImpressions }
       : { type: 'string' }
 
-  // Call Gemini with structured output. No language, no minRating.
-  const response = await ai.models.generateContent({
-    model: DEFAULT_MODEL,
-    contents: [
-      {
-        text: [
-          'You convert natural-language movie or TV intents into strict JSON filters.',
-          `Map relative time like 'after 2018' to yearRange [2018, currentYear].`,
-          'Only return JSON. Do not add explanations.',
-          "- Use only the provided enum for 'genres' and 'impressions'.",
-          '- Do not include language or minRating fields.',
-          `- Propose up to ${MAX_NUM_TITLE_FILTERS} widely released feature film titles in 'titles'.`,
-          "- If the user requests 'Marvel hero movies', include representative MCU films.",
-          "- If the user requests 'Hugh Jackman movies', include his notable films.",
-          '- Do not invent non-existent or unreleased titles.',
-          "- If unsure, leave 'titles' empty; server will handle fallback.",
-        ].join('\n'),
-      },
-      { text: `User query: ${query}` },
-    ],
-    config: {
-      responseMimeType: 'application/json',
-      responseSchema: {
-        type: 'object',
-        properties: {
-          genres: { type: 'array', items: genreItems, minItems: 0 },
-          impressions: {
-            type: 'array',
-            items: impressionItems,
-            minItems: 0,
-            maxItems: 5,
-          },
-          yearRange: {
-            type: 'array',
-            items: { type: 'integer' },
-            minItems: 2,
-            maxItems: 2,
-          },
-          keywords: { type: 'string' },
-          titles: {
-            type: 'array',
-            items: { type: 'string' },
-            minItems: 0,
-            maxItems: MAX_NUM_TITLE_FILTERS,
-          },
-          titleExact: { type: 'string' },
-          titleKeywords: { type: 'string' },
-          casts: {
-            type: 'array',
-            items: { type: 'string' },
-            minItems: 0,
-            maxItems: 5,
-          },
+  let response = null
+
+  try {
+    // Call Gemini with structured output. No language, no minRating.
+    response = await ai.models.generateContent({
+      model: DEFAULT_MODEL,
+      contents: [
+        {
+          text: [
+            'You convert natural-language movie or TV intents into strict JSON filters.',
+            `Map relative time like 'after 2018' to yearRange [2018, currentYear].`,
+            'Only return JSON. Do not add explanations.',
+            "- Use only the provided enum for 'genres' and 'impressions'.",
+            '- Do not include language or minRating fields.',
+            `- Propose up to ${MAX_NUM_TITLE_FILTERS} widely released feature film titles in 'titles'.`,
+            "- If the user requests 'Marvel hero movies', include representative MCU films.",
+            "- If the user requests 'Hugh Jackman movies', include his notable films.",
+            '- Do not invent non-existent or unreleased titles.',
+            "- If unsure, leave 'titles' empty; server will handle fallback.",
+          ].join('\n'),
         },
-        required: ['genres'],
-        additionalProperties: false,
+        { text: `User query: ${query}` },
+      ],
+      config: {
+        responseMimeType: 'application/json',
+        responseSchema: {
+          type: 'object',
+          properties: {
+            genres: { type: 'array', items: genreItems, minItems: 0 },
+            impressions: {
+              type: 'array',
+              items: impressionItems,
+              minItems: 0,
+              maxItems: 5,
+            },
+            yearRange: {
+              type: 'array',
+              items: { type: 'integer' },
+              minItems: 2,
+              maxItems: 2,
+            },
+            keywords: { type: 'string' },
+            titles: {
+              type: 'array',
+              items: { type: 'string' },
+              minItems: 0,
+              maxItems: MAX_NUM_TITLE_FILTERS,
+            },
+            titleExact: { type: 'string' },
+            titleKeywords: { type: 'string' },
+            casts: {
+              type: 'array',
+              items: { type: 'string' },
+              minItems: 0,
+              maxItems: 5,
+            },
+          },
+          required: ['genres'],
+          additionalProperties: false,
+        },
       },
-    },
-  })
+    })
+  } catch (e) {
+    console.error(e)
+
+    const filteredMedias = await searchMedias(query)
+
+    return Response.json({
+      filteredMedias,
+      parsedFilters: {},
+      error: `The Gemini API rate limit might been exceeded. (${e})`,
+    })
+  }
+
+  if (!response?.text) {
+    const filteredMedias = await searchMedias(query)
+
+    return Response.json({
+      filteredMedias,
+      parsedFilters: {},
+      error: 'There are some errors in the Gemini API call.',
+    })
+  }
 
   // Defensive parse and normalization
-  const raw = response.text ? JSON.parse(response.text) : {}
+  const raw = response?.text ? JSON.parse(response.text) : {}
 
   // Ensure genres are within DB enum
   if (Array.isArray(raw.genres) && allowedGenres.length > 0) {
@@ -157,7 +182,7 @@ export async function POST(req: NextRequest) {
 
   cacheSet(cacheKey, parsed)
 
-  const medias = await aiSearchMedias(parsed)
+  const searchResult: SearchResult = await aiSearchMedias(parsed)
 
-  return Response.json(medias)
+  return Response.json(searchResult)
 }

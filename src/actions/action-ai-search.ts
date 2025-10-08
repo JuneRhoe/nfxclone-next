@@ -25,6 +25,7 @@ import { MediaSelect } from '@/drizzle-definitions/data-types'
 export interface SearchResult {
   filteredMedias: MediaSelect[]
   parsedFilters: ParsedFilters
+  error?: string
 }
 
 /* Escape % and _ for LIKE/ILIKE patterns */
