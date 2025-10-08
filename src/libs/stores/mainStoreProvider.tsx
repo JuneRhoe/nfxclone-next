@@ -9,15 +9,17 @@ import {
 } from '@/libs/stores/slices/themeModeSlice'
 import { createUserInfoSlice, UserInfoStore } from './slices/userInfoSlice'
 import { createMyMediasSlice, MyMediasStore } from './slices/myMediasSlice'
+import { createSearchKeySlice, SearchKeyStore } from './slices/searchKeySlice'
 
 const createMainStore = () =>
-  createStore<UserInfoStore & MyMediasStore & ThemeModeStore>()(
-    (...inputParams) => ({
-      ...createUserInfoSlice(...inputParams),
-      ...createMyMediasSlice(...inputParams),
-      ...createThemeModeSlice(...inputParams),
-    }),
-  )
+  createStore<
+    UserInfoStore & MyMediasStore & ThemeModeStore & SearchKeyStore
+  >()((...inputParams) => ({
+    ...createUserInfoSlice(...inputParams),
+    ...createMyMediasSlice(...inputParams),
+    ...createThemeModeSlice(...inputParams),
+    ...createSearchKeySlice(...inputParams),
+  }))
 
 type MainStoreApi = ReturnType<typeof createMainStore>
 const MainStoreContext = createContext<MainStoreApi | undefined>(undefined)
@@ -37,7 +39,9 @@ export const MainStoreProvider = ({ children }: { children: ReactNode }) => {
 }
 
 export const useMainStore = <T,>(
-  selector: (store: UserInfoStore & MyMediasStore & ThemeModeStore) => T,
+  selector: (
+    store: UserInfoStore & MyMediasStore & ThemeModeStore & SearchKeyStore,
+  ) => T,
 ): T => {
   const mainStoreContext = useContext(MainStoreContext)
 

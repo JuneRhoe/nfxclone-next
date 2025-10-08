@@ -25,6 +25,15 @@ export default function BrowseAbout() {
             </div>
           </div>
           <div>
+            <div className="pt-4 pb-1 text-base md:text-xl">AI Search</div>
+            <div className="flex flex-col text-gray-400">
+              <div>Natural language → structured filters (Gemini Free)</div>
+              <div>Titles / Casts / Genres; partial title match</div>
+              <div>Drizzle ORM queries with fallback chain</div>
+              <div>Parser via POST to avoid URL leaks</div>
+            </div>
+          </div>
+          <div>
             <div className="pt-4 pb-1 text-base md:text-xl">Backend</div>
             <div className="flex flex-col text-gray-400">
               <div>NextJS</div>
