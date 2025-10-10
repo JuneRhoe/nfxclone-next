@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server'
-import { ai, DEFAULT_MODEL } from '@/libs/ai/googleGemini'
+import { ai, DEFAULT_AI_MODEL } from '@/libs/ai/googleGemini'
 import { getAllowedGenres } from '@/actions/action-get-allowed-genres'
 import { getAllowedImpressions } from '@/actions/action-get-allowed-impressions'
 import {
@@ -34,6 +34,15 @@ function cacheSet(key: string, data: ParsedFilters) {
 export async function POST(req: NextRequest) {
   const { query } = await req.json()
 
+  if (process.env.NFX_CLONE_ENABLE_AI_SEARCH !== '1') {
+    const filteredMedias = await searchMedias(query)
+
+    return Response.json({
+      filteredMedias,
+      parsedFilters: {},
+    })
+  }
+
   // Simple in-memory cache for identical NL queries
   const cacheKey = `pf:${query}`
   const cached = cacheGet(cacheKey)
@@ -62,7 +71,7 @@ export async function POST(req: NextRequest) {
   try {
     // Call Gemini with structured output. No language, no minRating.
     response = await ai.models.generateContent({
-      model: DEFAULT_MODEL,
+      model: DEFAULT_AI_MODEL,
       contents: [
         {
           text: [
