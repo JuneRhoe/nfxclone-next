@@ -9,7 +9,11 @@ import { useMainStore } from '@/libs/stores/mainStoreProvider'
 import { SearchResult } from '@/actions/action-ai-search'
 import Spinner from '@/components/Spinner/Spinner'
 
-export default function BrowseSearch() {
+interface Props {
+  aiModel: string
+}
+
+export default function BrowseSearch({ aiModel }: Props) {
   const { itemSize, gapX } = useSearchItemSizeInfo()
   const { searchKey } = useMainStore((state) => state)
 
@@ -47,6 +51,10 @@ export default function BrowseSearch() {
           <>
             <div className="flex flex-col gap-1 pt-2 pb-6">
               <div>Results from Gemini</div>
+              <div className="flex gap-1">
+                <div className="text-xs text-gray-100">Model: </div>
+                <div className="text-xs text-gray-300">{aiModel}</div>
+              </div>
               <div className="flex gap-1">
                 <div className="text-xs text-gray-400">Titles: </div>
                 <div className="text-xs text-gray-500">
