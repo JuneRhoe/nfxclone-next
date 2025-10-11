@@ -75,27 +75,29 @@ export function SearchInput({ navTapRef }: Props) {
 
   return (
     <div className="flex items-center gap-2">
-      <div>
-        <button
-          className="cursor-pointer text-gray-200 transition-colors duration-300 text-shadow-gray-800
-            text-shadow-lg hover:text-gray-400"
-          onClick={() => {
-            setPrevPath(pathname)
-            setShowInput(true)
-            inputRef.current?.focus()
-          }}
-        >
-          AI Search
-        </button>
-      </div>
       <div
-        className="flex items-center justify-center bg-black outline-0"
+        className="relative flex items-center justify-center bg-black outline-0"
         style={{
           padding: showInput ? '0.25rem' : '0',
           border: showInput ? '1px solid #6a7282' : '0',
           backgroundColor: showInput ? 'black' : 'transparent',
         }}
       >
+        {!showInput && (
+          <div className="absolute left-[-4rem] whitespace-nowrap sm:left-[-4.5rem]">
+            <button
+              className="cursor-pointer text-gray-200 transition-colors duration-300 text-shadow-gray-800
+                text-shadow-lg hover:text-gray-400"
+              onClick={() => {
+                setPrevPath(pathname)
+                setShowInput(true)
+                inputRef.current?.focus()
+              }}
+            >
+              AI Search
+            </button>
+          </div>
+        )}
         <FontAwesomeIcon
           className="cursor-pointer text-[1rem] transition-all duration-300 hover:text-gray-400
             sm:text-[1.25rem]"
