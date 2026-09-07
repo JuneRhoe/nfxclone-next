@@ -28,7 +28,7 @@
 
 ## 🌐 Deployment
 
-This project is live on Vercel: **[Netflix Clone](https://nfxclone-next.vercel.app/)**.
+This project is live on Vercel: **[Netflix Clone](https://nfxclone-nxt.vercel.app/)**.
 
 ---
 
